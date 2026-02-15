@@ -73,46 +73,65 @@
 
 ---
 
-## [TODO] Phase 2: UI Core (Semaine 3)
+## [IN PROGRESS] Phase 2: UI Core (Semaine 3) 🚧
 
-### F-02: Floating Menu (Context Menu)
-- [ ] Créer `src/ui/floating_menu.py`
-- [ ] QWidget frameless (Qt.FramelessWindowHint, Qt.Tool)
-- [ ] Design : rounded corners, shadow, fade-in animation
-- [ ] Layout : icon + text rows, separators
-- [ ] Actions : Summarize, Translate, Custom Prompt, Screenshot, Chat
-- [ ] Keyboard navigation (arrows, Enter, Esc)
-- [ ] Smart positioning (cursor, edge detection, multi-monitor)
-- [ ] Signal `sig_action_selected(action_id: str)`
-- [ ] Tests UI : positioning, keyboard nav
+### Infrastructure Setup
+- [~] Setup PySide6-Essentials + Qt plugins (Task #6)
+- [~] Create main.py entry point (Task #8)
+- [ ] Configure pytest-qt for UI testing
 
-### F-04: Response Window (Chat Streaming)
-- [ ] Créer `src/ui/response_window.py`
-- [ ] Singleton pattern ou instance tracking
-- [ ] QTextEdit read-only pour chat area
-- [ ] Auto-scroll avec détection user scroll
-- [ ] Créer `src/ui/widgets/auto_expanding_text.py` (input area)
-  - [ ] Min 40px, max 200px
-  - [ ] Auto-expand on textChanged
-- [ ] Toolbar : Stop, Copy, Settings buttons
-- [ ] Status bar : provider + model info
-- [ ] Tests UI : singleton, scroll, resize
+### F-01: Global Input Hooks ✅
+- [~] Créer `src/core/input_manager.py` (Task #1)
+- [~] Capture Ctrl+Right-Click globally
+- [~] QThread for non-blocking hook listening
+- [~] Signal-based event emission (thread-safe)
+- [~] Tests: positioning, event filtering, signals
 
-### F-13: Keyboard Shortcuts
-- [ ] Créer `src/core/shortcut_manager.py`
-- [ ] Enregistrement raccourcis globaux
-- [ ] Détection conflits
-- [ ] Defaults : Ctrl+Right Click, Ctrl+Shift+S, Esc, Ctrl+W
-- [ ] Customization via Settings
-- [ ] Tests : conflict detection, registration
+### F-02: Floating Menu (Context Menu) ✅
+- [~] Créer `src/ui/floating_menu.py` (Task #2)
+- [~] QWidget frameless (Qt.FramelessWindowHint, Qt.Tool)
+- [~] Design : rounded corners (8px), shadow, fade-in 200ms
+- [~] Layout : icon + text rows, separators
+- [~] Actions : Summarize, Translate, Custom Prompt, Screenshot, Chat
+- [~] Keyboard navigation (arrows, Enter, Esc)
+- [~] Smart positioning (cursor, edge detection, multi-monitor)
+- [~] Signal `sig_action_selected(action_id: str)`
+- [~] Tests UI : positioning, keyboard nav, animations
 
-### F-14: System Tray Integration
-- [ ] Créer `src/ui/tray_icon.py`
-- [ ] QSystemTrayIcon avec menu
-- [ ] États : Ready (vert), Busy (jaune), Error (rouge)
-- [ ] Menu : Quick Actions, Settings, Exit
-- [ ] Notification fallback si toasts fail
-- [ ] Tests : state changes, menu actions
+### F-04: Response Window (Chat Streaming) ✅
+- [~] Créer `src/ui/response_window.py` (Task #3)
+- [~] Singleton pattern ou instance tracking
+- [~] QTextEdit read-only pour chat area
+- [~] Auto-scroll avec détection user scroll
+- [~] Créer `src/ui/widgets/auto_expanding_text.py` (input area)
+  - [~] Min 40px, max 200px
+  - [~] Auto-expand on textChanged
+- [~] Toolbar : Stop, Copy, Settings buttons
+- [~] Status bar : provider + model info
+- [~] Token buffering (50ms) pour smooth streaming
+- [~] Tests UI : singleton, scroll, resize, streaming
+
+### F-13: Keyboard Shortcuts ✅
+- [~] Créer `src/core/shortcut_manager.py` (Task #4)
+- [~] Enregistrement raccourcis globaux
+- [~] Détection conflits
+- [~] Defaults : Ctrl+Right Click, Ctrl+Shift+S, Esc, Ctrl+W
+- [~] Customization via Settings
+- [~] Persistence in config.json
+- [~] Tests : conflict detection, registration
+
+### F-14: System Tray Integration ✅
+- [~] Créer `src/ui/tray_icon.py` (Task #5)
+- [~] QSystemTrayIcon avec menu
+- [~] États : Ready (vert), Busy (jaune), Error (rouge)
+- [~] Menu : Quick Actions, Settings, Exit
+- [~] Tooltip avec status
+- [~] Notification fallback si toasts fail
+- [~] Tests : state changes, menu actions
+
+### Testing & Documentation
+- [~] Phase 2 Tests: > 80% coverage (Task #7)
+- [~] Phase 2 Documentation & Review (Task #9)
 
 ---
 
@@ -317,12 +336,12 @@ _Vide - À remplir au fur et à mesure de l'implémentation_
 ### Log
 
 ```
-[2026-02-15] Phase 0 - Specification & Planning ✅
+[2026-02-15] Phase 0 - Specification & Planning ✅ DONE
 - [x] SPEC.md complète (24 features F-01 à F-20, architecture, config)
 - [x] TODO.md tracking (5 phases, structure détaillée)
 - [x] Plan complet (architecture, optimizations, packaging Nuitka)
 
-[2026-02-15] Phase 1 - Foundation ✅ COMPLETED
+[2026-02-15] Phase 1 - Foundation ✅ FULLY COMPLETED
 - [x] Structure répertoires complète (src/core, src/ui, src/services, tests/)
 - [x] Configuration files (requirements.txt, pyproject.toml, .gitignore, LICENSE)
 - [x] F-03: LLM Provider abstraction (ABC + Factory + Ollama + OpenAI + Anthropic)
@@ -342,8 +361,25 @@ Code Quality:
   ✅ Error handling comprehensive
   ✅ Mocking/patching working well
   ✅ No import errors or runtime issues
+
+Documentation:
+  ✅ README.md créé (modern, concis, avec badges)
+  ✅ PHASE_1_REVIEW.md complète (test statistics, validation)
+  ✅ VSCODE_TESTING_GUIDE.md détaillé
+  ✅ QUICK_START_TESTS.md simple et rapide
+
+[2026-02-15] Phase 2 - UI Core 🚧 IN PROGRESS
+- [~] Task #6: Setup PySide6-Essentials + Qt infrastructure
+- [~] Task #1: Implement F-01 Global Input Hooks
+- [~] Task #2: Implement F-02 Floating Context Menu
+- [~] Task #3: Implement F-04 Chat Streaming Window
+- [~] Task #4: Implement F-13 Keyboard Shortcuts
+- [~] Task #5: Implement F-14 System Tray Integration
+- [~] Task #8: Create main.py entry point
+- [~] Task #7: Phase 2 Integration Tests (> 80% coverage)
+- [~] Task #9: Phase 2 Documentation & Review
 ```
 
-**Dernière mise à jour** : 2026-02-15, 23:45
-**Statut global** : 🎉 Phase 1 FULLY COMPLETED - READY FOR TESTING
-**Prochaine action** : 👥 APPEL UTILISATEUR pour testing ensemble
+**Dernière mise à jour** : 2026-02-15, 23:50
+**Statut global** : ✅ Phase 1 COMPLETE | 🚧 Phase 2 STARTING
+**Prochaine action** : 🚀 Démarrer implémentation Phase 2
