@@ -1,0 +1,92 @@
+[build-system]
+requires = ["setuptools>=65.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quick-shortcut-ai"
+version = "0.1.0"
+description = "Modern native Windows AI LLM assistant with global shortcuts"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "GPL-3.0-only"}
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+keywords = ["ai", "llm", "assistant", "shortcuts", "windows"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "PySide6-Essentials>=6.5.0",
+    "pynput>=1.7.6",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+rendering = ["markdown>=3.5", "Pygments>=2.16"]
+vision = ["Pillow>=10.0"]
+dev = [
+    "black>=23.0",
+    "ruff>=0.1.0",
+    "pytest>=7.4",
+    "pytest-qt>=4.2",
+    "pytest-cov>=4.1",
+    "pytest-asyncio>=0.21",
+    "nuitka>=1.9",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  \.git
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "W", "I", "N"]
+ignore = ["E501"]  # line too long (handled by black)
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+addopts = "--cov=src --cov-report=html --cov-report=term-missing --verbose"
+markers = [
+    "slow: marks tests as slow",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "*/__main__.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+min_coverage = 80
