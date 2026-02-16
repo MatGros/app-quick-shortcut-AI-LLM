@@ -33,6 +33,7 @@ from src.services.health_check import HealthCheckManager
 from src.ui.floating_menu import FloatingMenu
 from src.ui.response_window import ResponseWindow
 from src.ui.tray_icon import TrayIcon, TrayStatus
+from src.ui.settings_dialog import SettingsDialog
 
 # Import utilities
 from src.core.clipboard_manager import get_clipboard_manager
@@ -71,6 +72,7 @@ class QuickShortcutApp:
         self.floating_menu = None
         self.response_window = None
         self.tray_icon = None
+        self.settings_dialog = None
 
         # State
         self._initialized = False
@@ -166,6 +168,10 @@ class QuickShortcutApp:
         self._setup_tray_actions()
         logger.info("TrayIcon created with actions")
 
+        # Settings dialog
+        self.settings_dialog = SettingsDialog()
+        logger.info("SettingsDialog created")
+
     def _setup_menu_actions(self):
         """Setup floating menu actions"""
         actions = [
@@ -222,6 +228,11 @@ class QuickShortcutApp:
         # Response window signals
         self.response_window.sig_stop_requested.connect(
             self._on_stop_streaming
+        )
+
+        # Settings dialog signals
+        self.settings_dialog.sig_settings_changed.connect(
+            self._on_settings_changed
         )
 
         logger.info("Signal connections complete")
@@ -349,13 +360,20 @@ class QuickShortcutApp:
             self.qapp.quit()
 
         elif action_id == "settings":
-            logger.info("Settings requested (not implemented)")
-            # TODO: Open settings dialog
+            logger.info("Settings requested")
+            self.settings_dialog.exec()
 
     def _on_stop_streaming(self):
         """Handle stop streaming request"""
         logger.info("Stop streaming requested")
         self.tray_icon.set_status(TrayStatus.READY)
+
+    def _on_settings_changed(self):
+        """Handle settings changed signal"""
+        logger.info("Settings changed, reloading configuration")
+        # Reload config from file
+        self.config.load()
+        logger.info("Configuration reloaded")
 
     def shutdown(self):
         """Shutdown application gracefully"""
@@ -376,6 +394,10 @@ class QuickShortcutApp:
             if self.floating_menu:
                 if self.floating_menu.isVisible():
                     self.floating_menu.close()
+
+            if self.settings_dialog:
+                if self.settings_dialog.isVisible():
+                    self.settings_dialog.close()
 
             logger.info("Shutdown complete")
 
