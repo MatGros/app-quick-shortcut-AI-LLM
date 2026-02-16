@@ -22,6 +22,8 @@ from PySide6.QtGui import QFont, QColor, QPalette
 import logging
 from typing import Optional, Iterator
 
+from src.ui.markdown_renderer import get_markdown_renderer
+
 logger = logging.getLogger(__name__)
 
 
@@ -214,6 +216,9 @@ class ResponseWindow(QMainWindow):
         self._is_streaming = False
         self.btn_stop.setEnabled(False)
 
+        # Render markdown after streaming completes
+        self._render_markdown_response()
+
     def _on_stop_clicked(self):
         """Stop button clicked"""
         logger.info("Stop requested")
@@ -247,6 +252,27 @@ class ResponseWindow(QMainWindow):
     def get_input_text(self) -> str:
         """Get current input text"""
         return self.text_input.toPlainText()
+
+    def _render_markdown_response(self):
+        """Render accumulated response as markdown HTML"""
+        try:
+            # Get the plain text response
+            plain_text = self.text_response.toPlainText()
+
+            if not plain_text.strip():
+                return  # Nothing to render
+
+            # Render markdown to HTML
+            renderer = get_markdown_renderer()
+            html = renderer.render(plain_text)
+
+            # Display HTML in the widget
+            self.text_response.setHtml(html)
+
+            logger.info("Markdown rendering applied to response")
+        except Exception as e:
+            logger.error(f"Markdown rendering failed: {e}", exc_info=True)
+            # Keep the plain text if rendering fails
 
     def is_streaming(self) -> bool:
         """Check if currently streaming"""

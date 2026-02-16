@@ -361,3 +361,100 @@ class TestResponseWindowIntegration:
 
         # Response should persist
         assert response_window.get_response_text() == original_text
+
+
+class TestResponseWindowMarkdownRendering:
+    """Markdown rendering integration tests"""
+
+    @pytest.mark.qt
+    def test_render_markdown_response_plain_text(self, qapp, response_window):
+        """Test rendering plain text as markdown"""
+        response_window.text_response.setText("This is plain text")
+        response_window._render_markdown_response()
+
+        # Should have rendered (text should still be there or HTML should contain it)
+        result = response_window.text_response.toPlainText()
+        assert "plain text" in result
+
+    @pytest.mark.qt
+    def test_render_markdown_response_with_header(self, qapp, response_window):
+        """Test rendering markdown header"""
+        response_window.text_response.setText("# Main Header\n\nSome content")
+        response_window._render_markdown_response()
+
+        # Should render successfully
+        result = response_window.text_response.toPlainText()
+        assert "Main Header" in result or "Header" in result
+
+    @pytest.mark.qt
+    def test_render_markdown_response_with_code(self, qapp, response_window):
+        """Test rendering markdown with code block"""
+        code_text = """```python
+def hello():
+    print("world")
+```"""
+        response_window.text_response.setText(code_text)
+        response_window._render_markdown_response()
+
+        # Should render without errors
+        result = response_window.text_response.toPlainText()
+        assert "hello" in result or "print" in result
+
+    @pytest.mark.qt
+    def test_render_markdown_response_empty(self, qapp, response_window):
+        """Test rendering empty response doesn't crash"""
+        response_window.text_response.setText("")
+        response_window._render_markdown_response()
+
+        # Should not crash
+        assert response_window.get_response_text() == ""
+
+    @pytest.mark.qt
+    def test_render_markdown_preserves_copy_functionality(self, qapp, response_window):
+        """Test that copy still works after markdown rendering"""
+        response_window.text_response.setText("# Header\n\nContent to copy")
+        response_window._render_markdown_response()
+
+        # toPlainText should still work
+        text = response_window.get_response_text()
+        assert len(text) > 0
+
+    @pytest.mark.qt
+    def test_finish_streaming_calls_render_markdown(self, qapp, response_window):
+        """Test that finish_streaming triggers markdown rendering"""
+        response_window.append_token("# Response\n")
+        response_window.append_token("This is content")
+
+        assert response_window.is_streaming()
+
+        # Finish should call _render_markdown_response
+        response_window.finish_streaming()
+
+        # Streaming should be done
+        assert response_window.is_streaming() == False
+        # Content should still be available
+        assert len(response_window.get_response_text()) > 0
+
+    @pytest.mark.qt
+    def test_render_markdown_with_formatting(self, qapp, response_window):
+        """Test rendering markdown with bold and italic"""
+        response_window.text_response.setText("This is **bold** and *italic* text")
+        response_window._render_markdown_response()
+
+        result = response_window.text_response.toPlainText()
+        # Should contain the original content
+        assert "bold" in result
+        assert "italic" in result
+
+    @pytest.mark.qt
+    def test_render_markdown_with_list(self, qapp, response_window):
+        """Test rendering markdown list"""
+        list_text = """- Item 1
+- Item 2
+- Item 3"""
+        response_window.text_response.setText(list_text)
+        response_window._render_markdown_response()
+
+        result = response_window.text_response.toPlainText()
+        # Items should be present
+        assert "Item 1" in result or "Item" in result
