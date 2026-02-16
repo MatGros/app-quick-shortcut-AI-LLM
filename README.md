@@ -3,8 +3,8 @@
 > A lightweight, ultra-fast Windows native application for AI-powered text assistance with global keyboard shortcuts.
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
-[![Tests Passing](https://img.shields.io/badge/Tests-43%2F43%20passing-brightgreen)](./PHASE_1_REVIEW.md)
-[![Coverage](https://img.shields.io/badge/Coverage-87%25-brightgreen)](#test-coverage)
+[![Tests Passing](https://img.shields.io/badge/Tests-213%2F213%20passing-brightgreen)](./PHASE_2_REVIEW.md)
+[![Coverage](https://img.shields.io/badge/Coverage-89%25-brightgreen)](#test-coverage)
 [![License](https://img.shields.io/badge/License-GPL--3.0-blue)](LICENSE)
 
 ---
@@ -74,10 +74,25 @@ python -m pytest tests/ -v
 - [x] LLM Provider abstraction (Ollama, OpenAI, Anthropic)
 - [x] Configuration service (JSON persistence)
 - [x] Health checks (startup validation)
-- [x] **43 comprehensive tests (87% coverage)**
+- [x] **43 unit tests (87% coverage)**
+- [x] Ready for UI layer
 
-### 🚧 Phase 2: UI Core (IN PROGRESS)
-- [ ] Global keyboard hooks (Ctrl+Right-Click)
+### ✅ Phase 2: UI Core (COMPLETE - Unit Tests)
+- [x] Global keyboard hooks (Ctrl+Right-Click) - unit tested
+- [x] Floating context menu (6 actions) - unit tested
+- [x] Response streaming window - unit tested
+- [x] Keyboard shortcuts manager - unit tested
+- [x] System tray icon - unit tested
+- [x] Main app orchestration - unit tested
+- [x] **213 unit tests (89% coverage)**
+- [x] Components signal-connected
+- ⚠️ No integration/visual tests yet (moved to Phase 3)
+
+### 🚧 Phase 3: LLM Integration & Testing (IN PROGRESS)
+- [x] Real LLM streaming (Task #1 - partially done)
+- [x] Clipboard manager (Task #1 - done)
+- 🚧 Markdown rendering (Task #3 - TODO)
+- 🚧 Settings dialog (Task #4 - TODO)
 - [ ] Floating context menu
 - [ ] Chat streaming window
 - [ ] System tray integration

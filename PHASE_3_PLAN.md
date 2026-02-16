@@ -1,30 +1,57 @@
-# Phase 3 Plan - LLM Integration & Streaming
-**Status**: PLANNING
-**Target Duration**: 3-4 sessions (intensive)
-**Start Date**: 2026-02-15
-**Goal**: Replace simulated responses with real LLM streaming + Markdown rendering
+# Phase 3 Plan - LLM Integration & Comprehensive Testing
+**Status**: IN PROGRESS (resuming with updated scope)
+**Target Duration**: 4-5 sessions (intensive)
+**Start Date**: 2026-02-16
+**Goal**: Real LLM streaming + Integration Tests + User Acceptance Tests
 
 ---
 
 ## Overview
 
-Phase 2 completed the **UI layer** with all components in place. Phase 3 adds the **LLM layer** - real API calls, streaming, and content rendering.
+Phase 2 completed the **UI Core** with 7 components and 213 unit tests.
+Phase 3 adds **LLM Integration** + **Integration Testing** + **User Acceptance Testing**.
+
+### Phase 3 Scope (REVISED)
+
+**Three Main Pillars**:
+
+1. **LLM Integration** - Real providers (not simulated)
+   - Clipboard reading (text + images)
+   - Real LLM calls (Ollama, OpenAI, Anthropic)
+   - Markdown rendering
+   - Auto-paste to active window
+   - Settings dialog for provider config
+
+2. **Integration Tests** - Component chains
+   - Clipboard → LLM → Display
+   - InputHook → Menu → ResponseWindow
+   - Full workflows with mocked providers
+
+3. **User Acceptance Tests** - Real inputs/outputs
+   - Real mouse/keyboard detection
+   - Real clipboard operations
+   - Real LLM provider calls (with your setup)
+   - Visual validation
+   - Performance measurement
+   - Error handling in practice
 
 ### What Works (from Phase 2)
-✅ Global input hooks (Ctrl+Right-Click)
-✅ Floating menu (6 actions with selection)
-✅ Response window (singleton, token buffering ready)
-✅ Shortcuts management system
-✅ System tray with status indicators
-✅ Main app orchestration
+✅ Global input hooks (code ready, unit tested)
+✅ Floating menu (code ready, unit tested)
+✅ Response window (code ready, unit tested, needs real streaming)
+✅ Shortcuts management (code ready, unit tested)
+✅ System tray (code ready, unit tested)
+✅ Main app orchestration (code ready, unit tested)
 
-### What's Missing (Phase 3)
-- Real LLM API calls (not simulated)
-- Clipboard content capture (text + images)
-- Markdown rendering in response window
-- Vision API integration
-- Settings dialog for provider configuration
-- Auto-paste responses to active window
+### What Phase 3 Adds
+- ✅ Real LLM streaming (partially done in Task #1)
+- ✅ Clipboard manager (done in Task #1)
+- 🚧 Markdown rendering
+- 🚧 Settings dialog
+- 🚧 Auto-paste functionality
+- 🆕 Integration tests (5-10+ tests)
+- 🆕 User acceptance tests (5-10+ tests)
+- 🆕 Performance profiling
 
 ---
 
