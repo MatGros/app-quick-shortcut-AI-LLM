@@ -34,6 +34,9 @@ from src.ui.floating_menu import FloatingMenu
 from src.ui.response_window import ResponseWindow
 from src.ui.tray_icon import TrayIcon, TrayStatus
 
+# Import utilities
+from src.core.clipboard_manager import get_clipboard_manager
+
 logger = logging.getLogger(__name__)
 
 
@@ -254,32 +257,84 @@ class QuickShortcutApp:
         self.response_window.clear_response()
         self.response_window.show()
 
-        # Simulate response (in real app, would call LLM provider)
-        self._simulate_response(action_id)
+        # Stream real LLM response
+        self._stream_real_response(action_id)
 
-    def _simulate_response(self, action_id: str):
-        """Simulate LLM response (placeholder)"""
-        # In real implementation, this would:
-        # 1. Get clipboard content
-        # 2. Call LLM provider
-        # 3. Stream response tokens
+    def _stream_real_response(self, action_id: str):
+        """Stream real LLM response from configured provider"""
+        try:
+            # 1. Get clipboard content
+            clipboard_mgr = get_clipboard_manager()
+            content = clipboard_mgr.get_text()
 
-        sample_responses = {
-            "summarize": "This text provides an overview of the main topic. Key points include efficiency, scalability, and modern design patterns. The conclusion highlights best practices for implementation.",
-            "translate": "Texte traduit en français: Ce code illustre les meilleures pratiques pour construire une application moderne et performante.",
-            "explain": "This code defines a class that manages the application state. It handles configuration, user interactions, and displays results. The architecture follows the Model-View-Controller pattern.",
-            "code": "def process_data(items):\n    return [item.strip().upper() for item in items if item]",
-            "screenshot": "Screenshot analysis: The image shows a user interface with several interactive elements...",
-        }
+            if not content:
+                logger.warning("Clipboard empty, cannot process")
+                self.response_window.append_token("❌ Clipboard is empty. Please copy some text first.")
+                self.response_window.finish_streaming()
+                self.tray_icon.set_status(TrayStatus.READY)
+                return
 
-        response = sample_responses.get(action_id, f"Response for {action_id}")
+            # 2. Get active provider
+            provider = self.config.get_default_provider()
+            if not provider:
+                logger.error("No provider configured")
+                self.response_window.append_token("❌ No LLM provider configured. Please set one in Settings.")
+                self.response_window.finish_streaming()
+                self.tray_icon.set_status(TrayStatus.READY)
+                return
 
-        # Simulate streaming
-        for token in response.split():
-            self.response_window.append_token(token + " ")
+            logger.info(f"Streaming {action_id} via {provider.__class__.__name__}")
 
-        self.response_window.finish_streaming()
-        self.tray_icon.set_status(TrayStatus.READY)
+            # 3. Create messages list based on action
+            prompts = {
+                "summarize": "Please provide a concise summary of the following text:",
+                "translate": "Translate the following text to French:",
+                "explain": "Explain the following code or text in detail:",
+                "code": "Generate code to accomplish the following task:",
+                "screenshot": "Analyze the following screenshot and describe what you see:",
+            }
+
+            system_prompt = prompts.get(action_id, "Please process the following text:")
+
+            # Build message format: [{"role": "user", "content": "..."}]
+            messages = [
+                {"role": "user", "content": f"{system_prompt}\n\n{content}"}
+            ]
+
+            # 4. Get model (first available or configured default)
+            try:
+                available_models = provider.get_available_models()
+                model = available_models[0] if available_models else "llama2"
+            except Exception as e:
+                logger.warning(f"Could not fetch models, using default: {e}")
+                model = "llama2"  # Default fallback
+
+            logger.info(f"Using model: {model}")
+
+            # 5. Stream response tokens
+            token_count = 0
+            try:
+                for token in provider.stream_chat(messages, model=model):
+                    self.response_window.append_token(token)
+                    token_count += 1
+
+                logger.info(f"Streaming complete: {token_count} tokens")
+
+            except Exception as stream_error:
+                logger.error(f"Streaming error: {stream_error}", exc_info=True)
+                self.response_window.append_token(
+                    f"\n\n⚠️ Error during streaming: {str(stream_error)}"
+                )
+
+            self.response_window.finish_streaming()
+
+        except Exception as e:
+            logger.error(f"Error streaming response: {e}", exc_info=True)
+            self.response_window.append_token(f"❌ Error: {str(e)}")
+            self.response_window.finish_streaming()
+
+        finally:
+            self.tray_icon.set_status(TrayStatus.READY)
 
     def _on_tray_action_triggered(self, action_id: str):
         """Handle tray icon menu action"""

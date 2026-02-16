@@ -186,27 +186,33 @@ class TestQuickShortcutAppShutdown:
             assert mock_stop.called or True
 
 
-class TestQuickShortcutAppSimulation:
-    """Test response simulation"""
+class TestQuickShortcutAppStreaming:
+    """Test real LLM streaming"""
 
-    def test_simulate_response(self, main_app):
-        """Test response simulation"""
+    def test_stream_real_response_empty_clipboard(self, main_app):
+        """Test streaming with empty clipboard"""
         main_app._init_components()
 
-        # Should not raise
-        main_app._simulate_response("summarize")
+        with patch('src.core.clipboard_manager.get_clipboard_manager') as mock_clipboard_mgr:
+            mock_mgr_instance = Mock()
+            mock_mgr_instance.get_text.return_value = None  # Empty clipboard
+            mock_clipboard_mgr.return_value = mock_mgr_instance
 
-    def test_simulate_all_action_types(self, main_app):
-        """Test simulation for all action types"""
+            # Should not raise
+            main_app._stream_real_response("summarize")
+
+    def test_stream_real_response_no_provider(self, main_app):
+        """Test streaming with no provider configured"""
         main_app._init_components()
 
-        actions = ["summarize", "translate", "explain", "code", "screenshot"]
+        with patch.object(main_app.config, 'get_default_provider', return_value=None):
+            with patch('src.core.clipboard_manager.get_clipboard_manager') as mock_clipboard_mgr:
+                mock_mgr_instance = Mock()
+                mock_mgr_instance.get_text.return_value = "Test content"
+                mock_clipboard_mgr.return_value = mock_mgr_instance
 
-        for action in actions:
-            try:
-                main_app._simulate_response(action)
-            except Exception:
-                pytest.fail(f"Simulation failed for {action}")
+                # Should not raise
+                main_app._stream_real_response("summarize")
 
 
 class TestQuickShortcutAppIntegration:
