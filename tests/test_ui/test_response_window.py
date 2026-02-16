@@ -10,7 +10,7 @@ Tests verify:
 """
 
 import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 from PySide6.QtWidgets import QApplication
 from src.ui.response_window import ResponseWindow, AutoExpandingTextEdit
 import time
@@ -458,3 +458,76 @@ def hello():
         result = response_window.text_response.toPlainText()
         # Items should be present
         assert "Item 1" in result or "Item" in result
+
+
+class TestResponseWindowAutoPaste:
+    """Auto-Paste button functionality tests"""
+
+    @pytest.mark.qt
+    def test_auto_paste_button_exists(self, response_window):
+        """Test auto-paste button exists and is disabled initially"""
+        assert hasattr(response_window, 'btn_auto_paste')
+        assert response_window.btn_auto_paste.isEnabled() == False
+
+    @pytest.mark.qt
+    def test_auto_paste_button_enabled_after_streaming(self, response_window):
+        """Test auto-paste button is enabled after streaming finishes"""
+        response_window.append_token("Test response content")
+        response_window.finish_streaming()
+
+        # Button should be enabled when we have content
+        assert response_window.btn_auto_paste.isEnabled() == True
+
+    @pytest.mark.qt
+    def test_auto_paste_button_disabled_on_clear(self, response_window):
+        """Test auto-paste button is disabled when response is cleared"""
+        response_window.append_token("Test response")
+        response_window.finish_streaming()
+        assert response_window.btn_auto_paste.isEnabled() == True
+
+        response_window.clear_response()
+
+        assert response_window.btn_auto_paste.isEnabled() == False
+
+    @pytest.mark.qt
+    def test_auto_paste_click(self, response_window):
+        """Test auto-paste button click"""
+        response_window.text_response.setText("Test content")
+        response_window.finish_streaming()
+
+        with patch('src.ui.response_window.get_auto_paster') as mock_paster_factory:
+            mock_paster = MagicMock()
+            mock_paster.paste_to_active_window.return_value = True
+            mock_paster_factory.return_value = mock_paster
+
+            response_window._on_auto_paste_clicked()
+
+            mock_paster.paste_to_active_window.assert_called_once()
+
+    @pytest.mark.qt
+    def test_auto_paste_empty_response(self, response_window):
+        """Test auto-paste with empty response"""
+        response_window.text_response.setText("")
+
+        with patch('src.ui.response_window.get_auto_paster') as mock_paster_factory:
+            response_window._on_auto_paste_clicked()
+
+            # Paster should not be created for empty text
+            mock_paster_factory.assert_not_called()
+
+    @pytest.mark.qt
+    def test_auto_paste_with_markdown(self, response_window):
+        """Test auto-paste after markdown rendering"""
+        response_window.text_response.setText("# Header\n\nContent")
+        response_window.finish_streaming()
+
+        with patch('src.ui.response_window.get_auto_paster') as mock_paster_factory:
+            mock_paster = MagicMock()
+            mock_paster.paste_to_active_window.return_value = True
+            mock_paster_factory.return_value = mock_paster
+
+            response_window._on_auto_paste_clicked()
+
+            # Should paste the markdown text
+            call_args = mock_paster.paste_to_active_window.call_args
+            assert "Header" in call_args[0][0]

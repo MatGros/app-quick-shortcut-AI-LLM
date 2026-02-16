@@ -23,6 +23,7 @@ import logging
 from typing import Optional, Iterator
 
 from src.ui.markdown_renderer import get_markdown_renderer
+from src.core.auto_paster import get_auto_paster
 
 logger = logging.getLogger(__name__)
 
@@ -160,9 +161,13 @@ class ResponseWindow(QMainWindow):
         self.btn_send.clicked.connect(self._on_send_clicked)
         self.btn_copy = QPushButton("Copy")
         self.btn_copy.clicked.connect(self._on_copy_clicked)
+        self.btn_auto_paste = QPushButton("Auto-Paste")
+        self.btn_auto_paste.clicked.connect(self._on_auto_paste_clicked)
+        self.btn_auto_paste.setEnabled(False)
 
         button_layout.addWidget(self.btn_send)
         button_layout.addWidget(self.btn_copy)
+        button_layout.addWidget(self.btn_auto_paste)
         button_layout.addStretch()
         layout.addLayout(button_layout)
 
@@ -216,6 +221,10 @@ class ResponseWindow(QMainWindow):
         self._is_streaming = False
         self.btn_stop.setEnabled(False)
 
+        # Enable auto-paste if we have content
+        if self.text_response.toPlainText().strip():
+            self.btn_auto_paste.setEnabled(True)
+
         # Render markdown after streaming completes
         self._render_markdown_response()
 
@@ -239,11 +248,27 @@ class ResponseWindow(QMainWindow):
         clipboard.setText(self.text_response.toPlainText())
         logger.info("Response copied to clipboard")
 
+    def _on_auto_paste_clicked(self):
+        """Auto-Paste button clicked"""
+        text = self.text_response.toPlainText()
+        if not text.strip():
+            logger.warning("No text to paste")
+            return
+
+        paster = get_auto_paster()
+        success = paster.paste_to_active_window(text)
+
+        if success:
+            logger.info("Auto-paste completed successfully")
+        else:
+            logger.error("Auto-paste failed")
+
     def clear_response(self):
         """Clear response text"""
         self.text_response.clear()
         self._token_buffer = ""
         self._user_scrolled_up = False
+        self.btn_auto_paste.setEnabled(False)
 
     def get_response_text(self) -> str:
         """Get current response text"""
