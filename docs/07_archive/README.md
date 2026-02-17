@@ -1,55 +1,30 @@
-# 📦 Archive - Historical Documentation
+# 📦 Step 7: Archive - Historical Documentation
 
-This folder contains **outdated or consolidated documents** from earlier phases of the project. They are preserved for historical reference but should **NOT be the source of truth** for current development.
+This folder is for **old versions and obsolete documents** that are no longer the source of truth.
 
----
+## Current Status
 
-## 🚫 Why These Are Archived
+**This archive is currently EMPTY** - All misleading or conflicting documentation has been cleaned up (2026-02-17).
 
-| Document | Reason | When to Reference |
-|----------|--------|-------------------|
-| **FINAL_UAT_FIXES.md** | Contradicted by PHASE3_ISSUES_INVENTORY.md (claims fixed but bugs still exist) | Never - misleading info |
-| **HOTFIX_NOTES.md** | From 2026-02-16 - superseded by current fixes | Historical reference only |
-| **PHASE_3_COMPLETION.md** | Claims Phase 3 complete but 5 critical bugs block it | Never - obsolete |
-| **PHASE_3_CONTINUATION_PLAN.md** | From intermediate state - no longer relevant | Historical reference only |
-| **READY_FOR_UAT.md** | Says ready for UAT but critical bugs block it | Never - misleading |
-| **RESUMED_UAT_CHECKLIST.md** | Old checklist format - superseded by current plan | Historical reference only |
-| **UAT_FIXES_SUMMARY.md** | Contains false success claims (conflicts with PHASE3_ISSUES_INVENTORY.md) | Never - misleading |
-| **UAT_ISSUES_FOUND.md** | Old issues list - superseded by PHASE3_ISSUES_INVENTORY.md | Historical reference only |
-| **UAT_TEST_PLAN.md** | Never existed in final form - removed as duplicate reference | Never - missing content |
+## When to Use This Folder
 
----
+- ✅ **Store old versions** after a major refactor
+- ✅ **Keep previous approaches** for historical context
+- ✅ **Preserve early plans** that were superseded but show decision evolution
 
-## ✅ Current Source of Truth
+## When NOT to Use This Folder
 
-For **Phase 3 status and issues**, use:
-- **[PHASE3_ISSUES_INVENTORY.md](../05_review/PHASE3_ISSUES_INVENTORY.md)** - Authoritative current status
-- **[TODO.md](../02_planning/TODO.md)** - Task tracking source of truth
-- **[README.md](../../README.md)** - Project overview
+- ❌ Do NOT put files with conflicting status here (delete them instead)
+- ❌ Do NOT archive files that contradict current source of truth
+- ❌ Do NOT keep "ready for UAT" documents if bugs still block UAT
+
+## Current Source of Truth
+
+For all project information, use:
+- **[TODO.md](../02_planning/TODO.md)** - Task status (source of truth)
+- **[PHASE3_ISSUES_INVENTORY.md](../05_review/PHASE3_ISSUES_INVENTORY.md)** - Current bugs/issues
+- **[SPEC.md](../01_input/SPEC.md)** - Feature definitions
 
 ---
 
-## 📚 When to Access This Archive
-
-1. **Understanding project history** - Learn what approaches were tried
-2. **Debugging old issues** - Reference how problems were investigated
-3. **Context for decisions** - See why certain directions were taken
-4. **Git history** - These files can be recovered from git if needed
-
----
-
-## ⚠️ Never Use These For
-
-- ❌ Current project status
-- ❌ Bug severity assessment
-- ❌ What's implemented or working
-- ❌ Test plans or checklists
-- ❌ Configuration guidelines
-- ❌ Developer instructions
-
-Use **[TODO.md](../02_planning/TODO.md)** and **[PHASE3_ISSUES_INVENTORY.md](../05_review/PHASE3_ISSUES_INVENTORY.md)** instead.
-
----
-
-**Last Archived**: 2026-02-17
-**Consolidation**: Documentation cleanup to eliminate contradictions
+**See also**: docs/06_release/ (previous step - release & merge)
