@@ -159,7 +159,7 @@ class ConfigService:
 
     @staticmethod
     def _get_default_config() -> Dict[str, Any]:
-        """Get default configuration."""
+        """Get default configuration with Ollama provider."""
         return {
             "version": "1.0.0",
             "app": {

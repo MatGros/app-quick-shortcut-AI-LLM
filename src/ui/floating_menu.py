@@ -35,7 +35,9 @@ class MenuAction:
 
 
 class MenuItem(QLabel):
-    """Individual menu item widget"""
+    """Individual menu item widget - fully clickable"""
+
+    clicked = Signal()  # Emitted when item is clicked
 
     def __init__(self, action: MenuAction, parent=None):
         super().__init__(parent)
@@ -47,6 +49,9 @@ class MenuItem(QLabel):
         self.setMinimumHeight(40)
         self.setCursor(Qt.PointingHandCursor)
 
+        # Enable mouse events
+        self.setAttribute(Qt.WA_Hover)
+
         # Font
         font = QFont()
         font.setPointSize(10)
@@ -57,23 +62,49 @@ class MenuItem(QLabel):
 
     def _update_colors(self):
         """Update colors based on selection state"""
-        palette = QPalette()
-
         if self.is_selected:
-            # Highlight color when selected
-            palette.setColor(QPalette.WindowText, QColor(255, 255, 255))  # White text
-            self.setStyleSheet("background-color: #0066ff; padding: 5px;")
+            # Highlight color when selected - bright blue background, white text
+            self.setStyleSheet("""
+                MenuItem {
+                    background-color: #0066ff;
+                    color: #ffffff;
+                    padding: 8px 12px;
+                    border-radius: 4px;
+                    font-weight: bold;
+                }
+            """)
         else:
-            # Normal text color
-            palette.setColor(QPalette.WindowText, QColor(200, 200, 200))  # Light gray
-            self.setStyleSheet("background-color: transparent; padding: 5px;")
-
-        self.setPalette(palette)
+            # Normal text color - light gray on dark background
+            self.setStyleSheet("""
+                MenuItem {
+                    background-color: transparent;
+                    color: #e0e0e0;
+                    padding: 8px 12px;
+                    border-radius: 4px;
+                }
+            """)
 
     def set_selected(self, selected: bool):
         """Set selection state"""
         self.is_selected = selected
         self._update_colors()
+
+    def mousePressEvent(self, event):
+        """Handle click event"""
+        if event.button() == Qt.LeftButton:
+            logger.debug(f"MenuItem clicked: {self.action.label}")
+            self.clicked.emit()
+        super().mousePressEvent(event)
+
+    def enterEvent(self, event):
+        """Handle mouse hover"""
+        self.set_selected(True)
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        """Handle mouse leave"""
+        self.set_selected(False)
+        super().leaveEvent(event)
 
 
 class FloatingMenu(QWidget):
@@ -141,6 +172,8 @@ class FloatingMenu(QWidget):
         # Create and add menu item
         item = MenuItem(action, self)
         self.menu_items.append(item)
+        # Connect item click to action trigger
+        item.clicked.connect(lambda: self.action_triggered(action_id))
         self.layout.addWidget(item)
 
     def show_at_cursor(self):
@@ -286,9 +319,10 @@ class FloatingMenu(QWidget):
         self.sig_closed.emit()
 
     def closeEvent(self, event):
-        """Handle window close"""
-        self.sig_closed.emit()
-        super().closeEvent(event)
+        """Handle window close - hide instead of closing app"""
+        logger.debug("FloatingMenu close requested - hiding instead")
+        self.close_menu()
+        event.ignore()  # Don't close, just hide
 
 
 # Test/Demo

@@ -23,21 +23,22 @@ A modern Windows assistant that brings AI to your fingertips with **one keyboard
 
 ## ✨ Key Features
 
-| Feature | Status | Details |
-|---------|--------|---------|
-| **🔌 Multi-LLM Support** | ✅ Phase 1 | Ollama, OpenAI, Anthropic (pluggable) |
-| **⌨️ Global Shortcuts** | 🚧 Phase 2 | Ctrl+Right-Click menu system |
-| **💬 Streaming Chat** | 🚧 Phase 2 | Real-time token streaming |
-| **📸 Screenshot + Vision** | 📋 Phase 3 | AI analyze images natively |
-| **💾 History** | 📋 Phase 4 | SQLite-based conversation storage |
-| **🎨 Modern UI** | 🚧 Phase 2 | Dark/Light themes, smooth animations |
-| **⚡ Ultra-Fast** | 🎯 Target | < 2s startup, < 100ms menu latency |
+| Feature                    | Status     | Details                               |
+| -------------------------- | ---------- | ------------------------------------- |
+| **🔌 Multi-LLM Support**   | ✅ Phase 1 | Ollama, OpenAI, Anthropic (pluggable) |
+| **⌨️ Global Shortcuts**    | 🚧 Phase 2 | Ctrl+Right-Click menu system          |
+| **💬 Streaming Chat**      | 🚧 Phase 2 | Real-time token streaming             |
+| **📸 Screenshot + Vision** | 📋 Phase 3 | AI analyze images natively            |
+| **💾 History**             | 📋 Phase 4 | SQLite-based conversation storage     |
+| **🎨 Modern UI**           | 🚧 Phase 2 | Dark/Light themes, smooth animations  |
+| **⚡ Ultra-Fast**          | 🎯 Target  | < 2s startup, < 100ms menu latency    |
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - **Windows 10** (1809+) or **Windows 11**
 - **Python 3.10+**
 - One LLM: Ollama (local) OR OpenAI/Anthropic API key
@@ -61,6 +62,7 @@ pytest tests/ -v
 ```
 
 ### First Run
+
 ```bash
 # Coming in Phase 2 - For now, tests only
 python -m pytest tests/ -v
@@ -71,6 +73,7 @@ python -m pytest tests/ -v
 ## 📋 Project Status
 
 ### ✅ Phase 1: Foundation (COMPLETE)
+
 - [x] LLM Provider abstraction (Ollama, OpenAI, Anthropic)
 - [x] Configuration service (JSON persistence)
 - [x] Health checks (startup validation)
@@ -78,6 +81,7 @@ python -m pytest tests/ -v
 - [x] Ready for UI layer
 
 ### ✅ Phase 2: UI Core (COMPLETE - Unit Tests)
+
 - [x] Global keyboard hooks (Ctrl+Right-Click) - unit tested
 - [x] Floating context menu (6 actions) - unit tested
 - [x] Response streaming window - unit tested
@@ -89,6 +93,7 @@ python -m pytest tests/ -v
 - ⚠️ No integration/visual tests yet (moved to Phase 3)
 
 ### 🚧 Phase 3: LLM Integration & Testing (IN PROGRESS)
+
 - [x] Real LLM streaming (Task #1 - partially done)
 - [x] Clipboard manager (Task #1 - done)
 - 🚧 Markdown rendering (Task #3 - TODO)
@@ -98,18 +103,21 @@ python -m pytest tests/ -v
 - [ ] System tray integration
 
 ### 📋 Phase 3: Advanced Features (PLANNED)
+
 - [ ] Screenshot capture + Vision API
 - [ ] Clipboard management
 - [ ] Auto-paste to active window
 - [ ] Markdown rendering with syntax highlighting
 
 ### 📋 Phase 4: Polish (PLANNED)
+
 - [ ] SQLite history with search
 - [ ] Custom themes (dark/light QSS)
 - [ ] Settings GUI (providers, shortcuts, appearance)
 - [ ] Toast notifications
 
 ### 📋 Phase 5: Release (PLANNED)
+
 - [ ] Performance optimization
 - [ ] Packaging with Nuitka (< 50MB exe, < 2s startup)
 - [ ] Documentation & user guide
@@ -120,6 +128,7 @@ python -m pytest tests/ -v
 ## 🧪 Testing
 
 ### Run All Tests
+
 ```bash
 # With coverage report
 pytest tests/ -v --cov=src --cov-report=term-missing
@@ -129,6 +138,7 @@ pytest tests/ -v
 ```
 
 ### Expected Output
+
 ```
 ✅ test_llm_provider.py     : 18 tests passing
 ✅ test_config_service.py   : 14 tests passing
@@ -138,6 +148,7 @@ Coverage: 87% ⭐
 ```
 
 ### Test Coverage by Module
+
 ```
 llm_provider.py    : 89% ⭐
 config_service.py  : 93% ⭐
@@ -182,11 +193,13 @@ app-quick-shortcut-ai-llm/
 ## ⚙️ Configuration
 
 ### Location
+
 ```
 %APPDATA%\QuickShortcutAI\config.json
 ```
 
 ### Example Config
+
 ```json
 {
   "providers": [
@@ -215,23 +228,26 @@ See [SPEC.md](SPEC.md) for complete configuration schema.
 
 ## 📚 Documentation
 
-- **[SPEC.md](SPEC.md)** - Complete technical specification (24 features, architecture)
-- **[TODO.md](TODO.md)** - Implementation roadmap (5 phases)
-- **[PHASE_1_REVIEW.md](PHASE_1_REVIEW.md)** - Phase 1 detailed review
-- **[VSCODE_TESTING_GUIDE.md](VSCODE_TESTING_GUIDE.md)** - How to run tests in VS Code
-- **[QUICK_START_TESTS.md](QUICK_START_TESTS.md)** - 3-minute test startup guide
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development workflow and standards
+- **[SPEC.md](docs/technical/SPEC.md)** - Complete technical specification
+- **[TODO.md](docs/planning/TODO.md)** - Implementation roadmap
+- **[PHASE_1_REVIEW.md](docs/planning/PHASE_1_REVIEW.md)** - Phase 1 detailed review
+- **[VSCODE_TESTING_GUIDE.md](docs/testing/VSCODE_TESTING_GUIDE.md)** - How to run tests in VS Code
+- **[QUICK_START_TESTS.md](docs/testing/QUICK_START_TESTS.md)** - 3-minute test startup guide
 
 ---
 
 ## 🔧 Development
 
 ### Code Style
+
 - **Formatter**: `black` (auto-formatted)
 - **Linter**: `ruff`
 - **Type Hints**: Where relevant (not strict)
 - **Docstrings**: Google style
 
 ### VS Code Setup
+
 ```
 Recommended extensions:
 - Python (Microsoft)
@@ -240,6 +256,7 @@ Recommended extensions:
 ```
 
 Open command palette (`Ctrl+Shift+P`):
+
 ```
 "Python: Select Interpreter" → Choose venv interpreter
 "Test: Focus on Test Explorer View" → See all tests
@@ -249,19 +266,20 @@ Open command palette (`Ctrl+Shift+P`):
 
 ## 🎯 Performance Targets
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| App startup | < 2s | TBD (Phase 2) |
-| Menu latency | < 100ms | TBD (Phase 2) |
+| Metric             | Target       | Current       |
+| ------------------ | ------------ | ------------- |
+| App startup        | < 2s         | TBD (Phase 2) |
+| Menu latency       | < 100ms      | TBD (Phase 2) |
 | Streaming response | Smooth 60fps | TBD (Phase 2) |
-| Memory (idle) | < 150MB | TBD (Phase 2) |
-| Exe size | < 50MB | TBD (Phase 5) |
+| Memory (idle)      | < 150MB      | TBD (Phase 2) |
+| Exe size           | < 50MB       | TBD (Phase 5) |
 
 ---
 
 ## 🐛 Troubleshooting
 
 ### Tests not found in VS Code?
+
 ```bash
 # 1. Refresh test explorer (icon in VS Code)
 # 2. Ensure pytest installed in venv:
@@ -270,6 +288,7 @@ pip install pytest pytest-cov
 ```
 
 ### Import errors?
+
 ```bash
 # Verify PYTHONPATH includes src/
 export PYTHONPATH=$PYTHONPATH:$(pwd)/src
@@ -277,6 +296,7 @@ python -m pytest tests/ -v
 ```
 
 ### Need more details?
+
 See [VSCODE_TESTING_GUIDE.md](VSCODE_TESTING_GUIDE.md) for comprehensive troubleshooting.
 
 ---
@@ -302,11 +322,13 @@ This project is licensed under **GPL-3.0** - see [LICENSE](LICENSE) file for det
 ## 🚦 Next Steps
 
 ### For Users
+
 1. ✅ Read this README
 2. ✅ Check [SPEC.md](SPEC.md) for features
 3. 🚧 Phase 2: Download exe and try it (coming soon)
 
 ### For Developers
+
 1. ✅ Run tests: `pytest tests/ -v`
 2. ✅ Read [PHASE_1_REVIEW.md](PHASE_1_REVIEW.md)
 3. 🚧 Phase 2: Begin UI implementation
@@ -324,4 +346,4 @@ This project is licensed under **GPL-3.0** - see [LICENSE](LICENSE) file for det
 
 **Built with ❤️ using Python + PySide6 + pytest**
 
-*Last updated: 2026-02-15 | Phase 1 Complete | Ready for Phase 2*
+_Last updated: 2026-02-15 | Phase 1 Complete | Ready for Phase 2_

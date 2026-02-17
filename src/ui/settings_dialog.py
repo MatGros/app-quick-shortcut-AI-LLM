@@ -96,7 +96,9 @@ class SettingsDialog(QDialog):
         self.provider_api_key = QLineEdit()
         self.provider_api_key.setPlaceholderText("Leave empty if not needed")
         self.provider_api_key.setEchoMode(QLineEdit.Password)
-        self.provider_model = QLineEdit()
+        self.provider_model = QComboBox()
+        self.provider_model.setEditable(True)
+        self.provider_model.setPlaceholderText("Select or type model name")
         self.provider_enabled = QCheckBox("Enabled")
 
         details_layout.addRow("Name:", self.provider_name)
@@ -106,6 +108,10 @@ class SettingsDialog(QDialog):
         details_layout.addRow("Default Model:", self.provider_model)
         details_layout.addRow("", self.provider_enabled)
 
+        # Connect type change to refresh models
+        self.provider_type.currentTextChanged.connect(self._on_provider_type_changed)
+        self.provider_url.textChanged.connect(self._on_provider_url_changed)
+
         details_group.setLayout(details_layout)
         layout.addWidget(details_group)
 
@@ -113,12 +119,15 @@ class SettingsDialog(QDialog):
         action_layout = QHBoxLayout()
         btn_test = QPushButton("Test Connection")
         btn_test.clicked.connect(self._on_test_connection)
+        btn_refresh_models = QPushButton("Refresh Models")
+        btn_refresh_models.clicked.connect(self._refresh_available_models)
         btn_save_provider = QPushButton("Save Provider")
         btn_save_provider.clicked.connect(self._on_save_provider)
         btn_delete = QPushButton("Delete Provider")
         btn_delete.clicked.connect(self._on_delete_provider)
 
         action_layout.addWidget(btn_test)
+        action_layout.addWidget(btn_refresh_models)
         action_layout.addWidget(btn_save_provider)
         action_layout.addWidget(btn_delete)
         action_layout.addStretch()
@@ -284,7 +293,9 @@ class SettingsDialog(QDialog):
                 self.provider_type.setCurrentText(provider.get("type", "ollama"))
                 self.provider_url.setText(provider.get("base_url", ""))
                 self.provider_api_key.setText(provider.get("api_key", ""))
-                self.provider_model.setText(provider.get("default_model", ""))
+                default_model = provider.get("default_model", "")
+                if default_model:
+                    self.provider_model.setEditText(default_model)
                 self.provider_enabled.setChecked(provider.get("enabled", False))
                 break
 
@@ -295,11 +306,14 @@ class SettingsDialog(QDialog):
         api_key = self.provider_api_key.text()
 
         try:
-            # Create temporary provider instance
+            # Create temporary provider instance with correct config dict
+            config = {
+                "base_url": base_url,
+                "api_key": api_key if api_key else "",
+            }
             provider = self.llm_factory.create(
                 provider_type=provider_type,
-                base_url=base_url,
-                api_key=api_key if api_key else None
+                config=config
             )
 
             # Test connection (health check)
@@ -326,6 +340,53 @@ class SettingsDialog(QDialog):
                 f"✗ Error testing connection:\n{str(e)}"
             )
 
+    def _on_provider_type_changed(self):
+        """Handle provider type change - refresh available models."""
+        self._refresh_available_models()
+
+    def _on_provider_url_changed(self):
+        """Handle provider URL change - refresh available models."""
+        self._refresh_available_models()
+
+    def _refresh_available_models(self):
+        """Fetch and display available models from the selected provider."""
+        provider_type = self.provider_type.currentText()
+        base_url = self.provider_url.text()
+        api_key = self.provider_api_key.text()
+
+        if not base_url:
+            self.provider_model.clear()
+            return
+
+        try:
+            # Create temporary provider instance
+            config = {
+                "base_url": base_url,
+                "api_key": api_key if api_key else "",
+            }
+            provider = self.llm_factory.create(
+                provider_type=provider_type,
+                config=config
+            )
+
+            # Get available models if provider supports it
+            if hasattr(provider, 'get_available_models'):
+                try:
+                    models = provider.get_available_models()
+                    self.provider_model.clear()
+                    for model in models:
+                        self.provider_model.addItem(model)
+                    if models:
+                        self.provider_model.setCurrentIndex(0)
+                except Exception as e:
+                    logger.warning(f"Could not fetch models: {e}")
+                    self.provider_model.clear()
+            else:
+                self.provider_model.clear()
+        except Exception as e:
+            logger.warning(f"Could not create provider for model listing: {e}")
+            self.provider_model.clear()
+
     def _on_save_provider(self):
         """Save provider configuration."""
         if not self.provider_list.selectedItems():
@@ -342,7 +403,7 @@ class SettingsDialog(QDialog):
             "type": self.provider_type.currentText(),
             "base_url": self.provider_url.text(),
             "api_key": self.provider_api_key.text(),
-            "default_model": self.provider_model.text(),
+            "default_model": self.provider_model.currentText(),
             "enabled": self.provider_enabled.isChecked(),
         }
 
@@ -411,3 +472,11 @@ class SettingsDialog(QDialog):
         self.sig_settings_changed.emit()
 
         logger.info("Settings saved")
+
+    def closeEvent(self, event):
+        """Handle window close - just hide instead of closing app"""
+        logger.debug("SettingsDialog close requested - accepting dialog close")
+        # For modal dialogs, close is handled by accept/reject
+        # But we prevent the entire app from closing
+        self.accept()  # Close the dialog properly
+        event.accept()  # Allow the dialog close

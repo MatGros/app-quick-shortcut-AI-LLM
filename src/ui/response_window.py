@@ -33,7 +33,10 @@ class AutoExpandingTextEdit(QTextEdit):
     Text edit that auto-expands based on content.
 
     Min height: 40px, Max height: 200px
+    Supports Ctrl+Enter to submit.
     """
+
+    sig_send_requested = Signal()  # Emitted when Ctrl+Enter pressed
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -58,6 +61,24 @@ class AutoExpandingTextEdit(QTextEdit):
     def sizeHint(self) -> QSize:
         """Return appropriate size hint"""
         return QSize(400, min(int(self.document().size().height()) + 10, 200))
+
+    def keyPressEvent(self, event):
+        """Handle key press - Ctrl+Enter or Shift+Enter to send"""
+        # Check for Ctrl+Enter or Shift+Enter
+        if event.key() == Qt.Key_Return:
+            # Ctrl+Return sends message
+            if event.modifiers() & Qt.ControlModifier:
+                self.sig_send_requested.emit()
+                event.accept()
+                return
+            # Shift+Return also sends (alternative if Ctrl doesn't work)
+            elif event.modifiers() & Qt.ShiftModifier:
+                self.sig_send_requested.emit()
+                event.accept()
+                return
+
+        # Default behavior for other keys (normal Return = newline)
+        super().keyPressEvent(event)
 
 
 class ResponseWindow(QMainWindow):
@@ -144,7 +165,7 @@ class ResponseWindow(QMainWindow):
 
         # Input area (expandable)
         self.text_input = AutoExpandingTextEdit()
-        self.text_input.setPlaceholderText("Type a message or paste text...")
+        self.text_input.setPlaceholderText("Type message... (Ctrl+Enter or Shift+Enter to send, or click Send)")
         self.text_input.setStyleSheet("""
             QTextEdit {
                 background-color: #1a1a1a;
@@ -153,6 +174,8 @@ class ResponseWindow(QMainWindow):
                 padding: 5px;
             }
         """)
+        # Connect Ctrl+Enter to send
+        self.text_input.sig_send_requested.connect(self._on_send_clicked)
         layout.addWidget(self.text_input)
 
         # Button bar (bottom)
@@ -247,6 +270,12 @@ class ResponseWindow(QMainWindow):
         clipboard = QApplication.clipboard()
         clipboard.setText(self.text_response.toPlainText())
         logger.info("Response copied to clipboard")
+
+    def closeEvent(self, event):
+        """Handle window close event - hide instead of closing"""
+        logger.debug("ResponseWindow close requested - hiding instead")
+        self.hide()
+        event.ignore()  # Don't actually close, just hide
 
     def _on_auto_paste_clicked(self):
         """Auto-Paste button clicked"""

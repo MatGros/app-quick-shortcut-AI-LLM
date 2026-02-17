@@ -21,12 +21,13 @@ Usage:
 import sys
 import logging
 from PySide6.QtWidgets import QApplication, QMessageBox
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QThread, Signal, QObject
 
 # Import core components
 from src.core.config_service import ConfigService
 from src.core.input_manager import InputManager
 from src.core.shortcut_manager import ShortcutManager
+from src.core.llm_provider import LLMProviderFactory
 from src.services.health_check import HealthCheckManager
 
 # Import UI components
@@ -39,6 +40,39 @@ from src.ui.settings_dialog import SettingsDialog
 from src.core.clipboard_manager import get_clipboard_manager
 
 logger = logging.getLogger(__name__)
+
+
+class StreamingWorker(QObject):
+    """Worker to run LLM streaming in a separate thread (non-blocking UI)"""
+
+    # Signals
+    token_received = Signal(str)  # Emit when token arrives
+    streaming_complete = Signal()  # Emit when streaming finishes
+    error_occurred = Signal(str)  # Emit when error happens
+
+    def __init__(self, provider, messages, model):
+        """Initialize worker with provider and messages"""
+        super().__init__()
+        self.provider = provider
+        self.messages = messages
+        self.model = model
+
+    def run(self):
+        """Run streaming in worker thread"""
+        try:
+            logger.info("Starting streaming in worker thread")
+            token_count = 0
+
+            for token in self.provider.stream_chat(self.messages, model=self.model):
+                self.token_received.emit(token)
+                token_count += 1
+
+            logger.info(f"Streaming complete: {token_count} tokens")
+            self.streaming_complete.emit()
+
+        except Exception as e:
+            logger.error(f"Streaming error in worker: {e}", exc_info=True)
+            self.error_occurred.emit(str(e))
 
 
 class QuickShortcutApp:
@@ -77,6 +111,7 @@ class QuickShortcutApp:
         # State
         self._initialized = False
         self._running = False
+        self._health_checks_passed = False
 
     def startup(self) -> bool:
         """
@@ -92,8 +127,9 @@ class QuickShortcutApp:
             self._load_config()
 
             # 2. Run health checks
-            if not self._run_health_checks():
-                logger.warning("Health checks failed, continuing anyway")
+            self._health_checks_passed = self._run_health_checks()
+            if not self._health_checks_passed:
+                logger.warning("Health checks failed, will show error status in tray icon")
 
             # 3. Initialize components
             self._init_components()
@@ -141,8 +177,10 @@ class QuickShortcutApp:
 
         if all_passed:
             logger.info("All health checks passed")
+            # Icon will be set to READY later in run()
         else:
-            logger.warning("Some health checks failed")
+            logger.warning("Some health checks failed - health status will be shown in tray icon")
+            # Will set tray icon to ERROR status in run() if checks failed
 
         return all_passed
 
@@ -212,6 +250,11 @@ class QuickShortcutApp:
             self._on_menu_action_selected
         )
 
+        # Response window chat input -> LLM response
+        self.response_window.sig_input_submitted.connect(
+            self._on_chat_message_submitted
+        )
+
         # Tray icon actions
         self.tray_icon.sig_action_triggered.connect(
             self._on_tray_action_triggered
@@ -244,8 +287,14 @@ class QuickShortcutApp:
         # Start input hooks
         self.input_mgr.start()
 
-        # Show tray icon
-        self.tray_icon.set_status(TrayStatus.READY)
+        # Show tray icon with appropriate status
+        if self._health_checks_passed:
+            logger.info("Health checks passed - showing READY status")
+            self.tray_icon.set_status(TrayStatus.READY)
+        else:
+            logger.warning("Health checks failed - showing ERROR status")
+            self.tray_icon.set_status(TrayStatus.ERROR)
+
         self.tray_icon.show()
 
         logger.info("UI shown and ready")
@@ -271,6 +320,92 @@ class QuickShortcutApp:
         # Stream real LLM response
         self._stream_real_response(action_id)
 
+    def _on_chat_message_submitted(self, user_message: str):
+        """Handle user message submitted from chat input"""
+        logger.info(f"Chat message received: {user_message[:50]}...")
+
+        self.tray_icon.set_status(TrayStatus.BUSY)
+        self._stream_chat_response(user_message)
+
+    def _stream_chat_response(self, user_message: str):
+        """Stream LLM response for a chat message"""
+        try:
+            # Get active provider config
+            provider_config = self.config.get_default_provider()
+            if not provider_config:
+                logger.error("No provider configured")
+                self.response_window.append_token("❌ No LLM provider configured. Please set one in Settings.")
+                self.response_window.finish_streaming()
+                self.tray_icon.set_status(TrayStatus.READY)
+                return
+
+            # Create provider instance from config
+            provider_type = provider_config.get("type", "ollama")
+            try:
+                # Filter config to only include provider-specific parameters
+                provider_init_config = {
+                    "base_url": provider_config.get("base_url", "http://localhost:11434"),
+                    "api_key": provider_config.get("api_key", ""),
+                }
+                provider = LLMProviderFactory.create(
+                    provider_type=provider_type,
+                    config=provider_init_config
+                )
+            except Exception as e:
+                logger.error(f"Failed to create provider: {e}")
+                self.response_window.append_token(f"❌ Failed to create provider: {str(e)}")
+                self.response_window.finish_streaming()
+                self.tray_icon.set_status(TrayStatus.READY)
+                return
+
+            logger.info(f"Chat with {provider.__class__.__name__}")
+
+            # Build message format
+            messages = [
+                {"role": "user", "content": user_message}
+            ]
+
+            # Get model (from config default or first available)
+            try:
+                default_model = self.config.get("default_model")
+                if default_model:
+                    model = default_model
+                else:
+                    available_models = provider.get_available_models()
+                    model = available_models[0] if available_models else "llama2"
+            except Exception as e:
+                logger.warning(f"Could not fetch models, using default: {e}")
+                model = "llama2"
+
+            logger.info(f"Chat using model: {model}")
+
+            # Stream response tokens (keep UI responsive)
+            token_count = 0
+            try:
+                for token in provider.stream_chat(messages, model=model):
+                    self.response_window.append_token(token)
+                    token_count += 1
+                    # Keep UI responsive by processing Qt events
+                    QApplication.processEvents()
+
+                logger.info(f"Chat streaming complete: {token_count} tokens")
+
+            except Exception as stream_error:
+                logger.error(f"Chat streaming error: {stream_error}", exc_info=True)
+                self.response_window.append_token(
+                    f"\n\n⚠️ Error during streaming: {str(stream_error)}"
+                )
+
+            self.response_window.finish_streaming()
+
+        except Exception as e:
+            logger.error(f"Error in chat response: {e}", exc_info=True)
+            self.response_window.append_token(f"❌ Error: {str(e)}")
+            self.response_window.finish_streaming()
+
+        finally:
+            self.tray_icon.set_status(TrayStatus.READY)
+
     def _stream_real_response(self, action_id: str):
         """Stream real LLM response from configured provider"""
         try:
@@ -285,11 +420,30 @@ class QuickShortcutApp:
                 self.tray_icon.set_status(TrayStatus.READY)
                 return
 
-            # 2. Get active provider
-            provider = self.config.get_default_provider()
-            if not provider:
+            # 2. Get active provider config
+            provider_config = self.config.get_default_provider()
+            if not provider_config:
                 logger.error("No provider configured")
                 self.response_window.append_token("❌ No LLM provider configured. Please set one in Settings.")
+                self.response_window.finish_streaming()
+                self.tray_icon.set_status(TrayStatus.READY)
+                return
+
+            # Create provider instance from config
+            provider_type = provider_config.get("type", "ollama")
+            try:
+                # Filter config to only include provider-specific parameters
+                provider_init_config = {
+                    "base_url": provider_config.get("base_url", "http://localhost:11434"),
+                    "api_key": provider_config.get("api_key", ""),
+                }
+                provider = LLMProviderFactory.create(
+                    provider_type=provider_type,
+                    config=provider_init_config
+                )
+            except Exception as e:
+                logger.error(f"Failed to create provider: {e}")
+                self.response_window.append_token(f"❌ Failed to create provider: {str(e)}")
                 self.response_window.finish_streaming()
                 self.tray_icon.set_status(TrayStatus.READY)
                 return
@@ -298,11 +452,11 @@ class QuickShortcutApp:
 
             # 3. Create messages list based on action
             prompts = {
-                "summarize": "Please provide a concise summary of the following text:",
-                "translate": "Translate the following text to French:",
-                "explain": "Explain the following code or text in detail:",
-                "code": "Generate code to accomplish the following task:",
-                "screenshot": "Analyze the following screenshot and describe what you see:",
+                "summarize": "Fais un résumé concis du texte suivant. Réponds en français:",
+                "translate": "Traduis le texte suivant en français:",
+                "explain": "Explique le code ou le texte suivant en détail. Réponds en français:",
+                "code": "Génère du code pour accomplir la tâche suivante. Réponds en français:",
+                "screenshot": "Analyse la capture d'écran suivante et décris ce que tu vois. Réponds en français:",
             }
 
             system_prompt = prompts.get(action_id, "Please process the following text:")
@@ -322,12 +476,14 @@ class QuickShortcutApp:
 
             logger.info(f"Using model: {model}")
 
-            # 5. Stream response tokens
+            # 5. Stream response tokens (keep UI responsive)
             token_count = 0
             try:
                 for token in provider.stream_chat(messages, model=model):
                     self.response_window.append_token(token)
                     token_count += 1
+                    # Keep UI responsive by processing Qt events
+                    QApplication.processEvents()
 
                 logger.info(f"Streaming complete: {token_count} tokens")
 
@@ -374,6 +530,18 @@ class QuickShortcutApp:
         # Reload config from file
         self.config.load()
         logger.info("Configuration reloaded")
+
+        # Re-run health checks and update tray icon
+        logger.info("Re-running health checks after settings change")
+        health_checks_passed = self._run_health_checks()
+
+        # Update tray icon based on new health check results
+        if health_checks_passed:
+            logger.info("Health checks now PASS - updating icon to READY")
+            self.tray_icon.set_status(TrayStatus.READY)
+        else:
+            logger.warning("Health checks still FAIL - keeping icon as ERROR")
+            self.tray_icon.set_status(TrayStatus.ERROR)
 
     def shutdown(self):
         """Shutdown application gracefully"""
