@@ -2,74 +2,263 @@
 
 Thank you for your interest in contributing! This document outlines the standards and workflows for this project to ensure a clean, fluid, and high-quality codebase.
 
-## Development Workflow
+---
 
-We follow a strict **Task -> Plan -> Implementation -> Verification** cycle for all significant changes.
+## 📚 Documentation Workflow
 
-### 1. Task Definition
+Our documentation follows a **7-step workflow** that mirrors the development process:
 
-- **Analyze**: Understand the goal deeply.
-- **Checklist**: Break down the work into atomic steps in `task.md` (or a temporary task file).
-- **Context**: Ensure you have the latest state (git pull, check `STATUS.md`).
+```
+01_input/        ← Specs, requirements, client issues
+     ↓
+02_planning/     ← Plans, scope, task lists (TODO.md)
+     ↓
+03_implementation/ ← Technical decisions, architecture
+     ↓
+04_testing/      ← Tests, UAT results, bug inventory
+     ↓
+05_review/       ← Feedback, validation, decisions
+     ↓
+06_release/      ← Updated specs, release notes
+     ↓
+07_archive/      ← Old versions, obsolete docs
+```
 
-### 2. Planning (Phase Planning)
+### Directory Structure
 
-- **Create a Plan**: For complex features, create a plan in `docs/planning/` (e.g., `PHASE_X_PLAN.md`).
-- **Review**: If working with an AI assistant or team, get approval on the plan before writing code.
-- **Technical Design**: Update `docs/technical/SPEC.md` if architectural changes are needed.
+```
+docs/
+├── 01_input/        - Cahier des charges, SPEC.md, PROJECT_DEFINITION.md
+├── 02_planning/     - Phase plans, TODO.md (source of truth for tasks)
+├── 03_implementation/ - Technical decisions, architecture notes
+├── 04_testing/      - Test plans, guides, results
+├── 05_review/       - Review feedback, issues to fix, validation
+├── 06_release/      - Updated specs after validation, release notes
+└── 07_archive/      - Historical versions, obsolete documents
+```
 
-### 3. Implementation
+---
 
-- **Clean Code**: Follow Python PEP 8 standards. Used `black` for formatting and `ruff` for linting.
-- **Type Hints**: Use type hints for function arguments and return values.
-- **Documentation**: Add docstrings to all modules, classes, and functions (Google style).
+## 🔄 Development Workflow
+
+We follow a strict **Task → Plan → Implementation → Testing → Review → Release** cycle for all significant changes.
+
+### 1. Task Definition (Planning Phase)
+
+- **Read**: docs/01_input/ (specs, requirements)
+- **Plan**: Define what you'll do in docs/02_planning/
+- **Create**: Task in TODO.md with clear scope
+- **Checklist**: Break down work into atomic steps
+
+### 2. Implementation
+
+- **Read**: docs/02_planning/TODO.md (your exact task)
+- **Read**: docs/03_implementation/TECHNICAL_DECISIONS.md (context)
+- **Code**: Follow PEP 8 standards, use `black` and `ruff`
+- **Document**: Add docstrings (Google style)
 - **Separation of Concerns**:
-  - `src/core`: Business logic, interfaces, data models.
-  - `src/ui`: PySide6 widgets and windows.
-  - `src/services`: Background agents, OS integration.
-  - `src/utils`: Helper functions.
+  - `src/core`: Business logic, interfaces, data models
+  - `src/ui`: PySide6 widgets and windows
+  - `src/services`: Background agents, OS integration
+  - `src/utils`: Helper functions
 
-### 4. Verification & Testing
+### 3. Testing
 
-- **Unit Tests**: Write tests in `tests/` for every new component.
-- **Run Tests**:
-  ```bash
-  pytest tests/ -v
-  ```
-- **Coverage**: Ensure strict coverage standards (>85%).
-  ```bash
-  pytest --cov=src tests/
-  ```
-- **Manual Verification**: Run the app and verify the UX manually if applicable.
+- **Unit Tests**: Write tests in `tests/` for every new component
+- **Run Tests**: `pytest tests/ -v`
+- **Coverage**: Ensure > 85% coverage: `pytest --cov=src tests/`
+- **Document**: Update docs/04_testing/TEST_PLAN.md with results
 
-## Project Structure
+### 4. Review & Validation
 
-- **`src/`**: Source code.
-- **`tests/`**: Test suite (unit and integration tests).
-- **`docs/`**: Documentation (organized by type).
-  - **`planning/`**: Phase plans, reviews, roadmaps
-  - **`technical/`**: Specifications, technical details, definitions
-  - **`testing/`**: Test guides, UAT reports, issue inventory
-  - **`logs/`**: Operational logs (current session status)
-  - **`archive/`**: **Obsolete/consolidated documents** (historical reference only)
-- **`assets/`**: Images, icons, styles.
+- **Create PR**: Include clear description
+- **Run checks**: All tests must pass
+- **Address feedback**: Update docs/05_review/REVIEW_FEEDBACK.md
+- **Decision**: Approve or request changes
 
-## Documentation Standards
+### 5. Release & Documentation Update
 
-### Authoritative Sources
+- **Update Specs**: docs/06_release/UPDATED_SPEC.md (mark features as deployed)
+- **Update Planning**: docs/02_planning/TODO.md (mark task as DONE)
+- **Archive Review**: Move docs/05_review/* to docs/07_archive/
+- **Commit**: Include migration of docs to archive/
 
-- **Current Status**: Update **`STATUS.md`** after every major session
-- **Project Overview**: Update **`README.md`** if features or phases change
-- **Phase 3 Issues**: See **`docs/testing/PHASE3_ISSUES_INVENTORY.md`** (authoritative for current bugs)
-- **Logs**: Update **`docs/logs/`** with operational notes
+---
 
-### Consolidation Rules
+## ✅ Pre-Action Checklists
 
-- **Do NOT create new status documents** if one exists (avoid duplication)
-- **Consolidate information** from multiple sources into single authoritative file
-- **Archive outdated docs** in `docs/archive/` with `.archived` suffix
-- **Never contradict** - if multiple docs exist for same topic, consolidate into one
+### ✅ Before Starting New Phase/Task
+
+**Checklist**:
+- [ ] Read docs/01_input/CAHIER_DES_CHARGES.md
+- [ ] Read docs/01_input/SPEC.md
+- [ ] Read docs/01_input/PROJECT_DEFINITION.md
+- [ ] Understand client issues/feedback
+- [ ] Review corresponding phase plan in docs/02_planning/
+
+**Why**: Ensures alignment with requirements before coding
+
+---
+
+### ✅ Before Implementing
+
+**Checklist**:
+- [ ] Task clearly defined in docs/02_planning/TODO.md
+- [ ] Read docs/03_implementation/TECHNICAL_DECISIONS.md
+- [ ] Understand architecture from docs/03_implementation/
+- [ ] Create feature branch with clear name
+- [ ] Have test strategy in mind
+
+**Why**: Prevents rework and keeps code aligned with decisions
+
+---
+
+### ✅ Before Testing
+
+**Checklist**:
+- [ ] Read docs/04_testing/TEST_PLAN.md
+- [ ] Code changes complete and committed
+- [ ] All new code has corresponding tests
+- [ ] Run: `pytest tests/ -v --cov=src`
+- [ ] Coverage > 85%?
+
+**Why**: Ensures quality before review
+
+---
+
+### ✅ Before Code Review / PR
+
+**Checklist**:
+- [ ] Task from docs/02_planning/TODO.md is 100% complete
+- [ ] All tests passing (365+ tests)
+- [ ] Code follows PEP 8 (black formatted, ruff clean)
+- [ ] PR description references docs/02_planning/ task
+- [ ] docs/05_review/REVIEW_DECISION.md has acceptance criteria
+
+**Why**: Saves time for reviewer, clear acceptance criteria
+
+---
+
+### ✅ After Review Approval
+
+**Checklist**:
+- [ ] All feedback addressed (docs/05_review/REVIEW_FEEDBACK.md)
+- [ ] Update docs/06_release/UPDATED_SPEC.md (feature marked as deployed)
+- [ ] Update docs/02_planning/TODO.md (task marked as [x] DONE)
+- [ ] Archive docs/05_review/* → docs/07_archive/
+- [ ] Merge with clean commit message
+
+**Commit Message Format**:
+```
+Feature: Brief description
+
+- What was implemented
+- Why (reference to docs/02_planning/ or docs/05_review/)
+- Any docs updates made
+
+See: docs/02_planning/TODO.md Task X
+See: docs/05_review/REVIEW_DECISION.md
+```
+
+---
+
+### ✅ Before Starting Next Phase
+
+**Checklist**:
+- [ ] All Phase N issues resolved and archived
+- [ ] docs/01_input/SPEC.md updated with deployed features
+- [ ] Phase review completed (docs/02_planning/PHASE_N_REVIEW.md)
+- [ ] New phase plan created (docs/02_planning/PHASE_N+1_PLAN.md)
+- [ ] TODO.md reset for new phase
+
+**Why**: Clean transition, proper closure of previous phase
+
+---
+
+## 📋 Key Documents Reference
+
+| Document | Location | Purpose | Updated When |
+|----------|----------|---------|--------------|
+| **CAHIER_DES_CHARGES.md** | docs/01_input/ | Original requirements | Phase start |
+| **SPEC.md** | docs/01_input/ | Technical specification | After phase release |
+| **PROJECT_DEFINITION.md** | docs/01_input/ | Phase definitions | Rarely |
+| **TODO.md** | docs/02_planning/ | Source of truth for tasks | Every session |
+| **PHASE_X_PLAN.md** | docs/02_planning/ | Phase implementation plan | Phase start |
+| **TECHNICAL_DECISIONS.md** | docs/03_implementation/ | Architecture decisions | During implementation |
+| **TEST_PLAN.md** | docs/04_testing/ | What to test and how | Before testing |
+| **PHASE3_ISSUES_INVENTORY.md** | docs/05_review/ | Bugs found and status | During UAT/review |
+| **REVIEW_FEEDBACK.md** | docs/05_review/ | Review comments | During review |
+| **UPDATED_SPEC.md** | docs/06_release/ | Specs after deployment | After approval |
+
+---
+
+## 🔗 Documentation Synchronization Rules
+
+**Key Principle**: TODO.md is the single source of truth for phase/task status.
+
+When updating status:
+
+| Change | Update These (Same Commit) |
+|--------|---------------------------|
+| Task completed | TODO.md → [x] DONE |
+| Phase complete | docs/02_planning/PHASE_X_PLAN.md + docs/01_input/SPEC.md |
+| Bug found | docs/05_review/PHASE3_ISSUES_INVENTORY.md + docs/05_review/REVIEW_FEEDBACK.md |
+| Bug fixed | docs/05_review/PHASE3_ISSUES_INVENTORY.md + TODO.md (if task) |
+| Feature deployed | docs/06_release/UPDATED_SPEC.md + docs/01_input/SPEC.md |
+
+**Rule**: Never scatter documentation updates across multiple commits. Keep them together to maintain clarity.
+
+---
+
+## 🛠️ Code Standards
+
+- **Formatter**: `black` (auto-formatted)
+- **Linter**: `ruff`
+- **Type Hints**: Use for function arguments and return values
+- **Docstrings**: Google style
+- **Testing**: pytest with > 85% coverage
+
+---
+
+## Git Hooks (Optional Automation)
+
+We provide optional git hooks to remind you of documentation checklists at key moments:
+
+### Install hooks (optional):
+```bash
+# Copy hooks to .git/hooks/
+cp .githooks/pre-commit .git/hooks/
+chmod +x .git/hooks/pre-commit
+```
+
+### Available hooks:
+- **pre-commit**: Reminds to update docs/02_planning/TODO.md if changing phase
+- **prepare-commit-msg**: Suggests referencing docs/ in commit messages
+
+---
 
 ## Asking for Help
 
-See `docs/testing/VSCODE_TESTING_GUIDE.md` for debugging tips.
+- **Testing Issues**: See docs/04_testing/VSCODE_TESTING_GUIDE.md
+- **Architecture Questions**: Read docs/03_implementation/TECHNICAL_DECISIONS.md
+- **Planning Questions**: Refer to docs/02_planning/TODO.md and phase plans
+- **Past Decisions**: Check docs/07_archive/ for historical context
+
+---
+
+## Summary
+
+1. ✅ **Read docs/01_input/** before starting
+2. ✅ **Plan in docs/02_planning/TODO.md**
+3. ✅ **Implement** with tests
+4. ✅ **Test** thoroughly
+5. ✅ **Review** with clear criteria
+6. ✅ **Release** with updated docs
+7. ✅ **Archive** old versions
+
+**Follow the workflow. Update docs at the right steps. Keep checklists in mind.**
+
+---
+
+**Last Updated**: 2026-02-17
+**Workflow Version**: 1.0 (with 7-step documentation process)

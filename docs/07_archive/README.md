@@ -23,8 +23,8 @@ This folder contains **outdated or consolidated documents** from earlier phases 
 ## ✅ Current Source of Truth
 
 For **Phase 3 status and issues**, use:
-- **[PHASE3_ISSUES_INVENTORY.md](../testing/PHASE3_ISSUES_INVENTORY.md)** - Authoritative current status
-- **[STATUS.md](../../STATUS.md)** - Root level project status
+- **[PHASE3_ISSUES_INVENTORY.md](../05_review/PHASE3_ISSUES_INVENTORY.md)** - Authoritative current status
+- **[TODO.md](../02_planning/TODO.md)** - Task tracking source of truth
 - **[README.md](../../README.md)** - Project overview
 
 ---
@@ -47,7 +47,7 @@ For **Phase 3 status and issues**, use:
 - ❌ Configuration guidelines
 - ❌ Developer instructions
 
-Use **[STATUS.md](../../STATUS.md)** and **[PHASE3_ISSUES_INVENTORY.md](../testing/PHASE3_ISSUES_INVENTORY.md)** instead.
+Use **[TODO.md](../02_planning/TODO.md)** and **[PHASE3_ISSUES_INVENTORY.md](../05_review/PHASE3_ISSUES_INVENTORY.md)** instead.
 
 ---
 

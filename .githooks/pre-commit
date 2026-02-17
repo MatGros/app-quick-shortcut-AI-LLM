@@ -1,0 +1,39 @@
+#!/bin/bash
+# Pre-commit hook: Remind about documentation updates
+# Install: cp .githooks/pre-commit .git/hooks/
+# Install: chmod +x .git/hooks/pre-commit
+
+echo ""
+echo "╔════════════════════════════════════════════════════════════════╗"
+echo "║          PRE-COMMIT: Documentation Checklist                  ║"
+echo "╚════════════════════════════════════════════════════════════════╝"
+echo ""
+
+# Check if docs/02_planning/TODO.md was modified
+if git diff --cached --name-only | grep -q "docs/02_planning/TODO.md"; then
+    echo "✅ TODO.md modified - Good!"
+    echo ""
+else
+    # Check if code changed
+    if git diff --cached --name-only | grep -qE "\.(py|js|ts|tsx)$"; then
+        echo "⚠️  Code changed but docs/02_planning/TODO.md NOT updated!"
+        echo ""
+        echo "Did you:"
+        echo "  [ ] Update docs/02_planning/TODO.md with task status?"
+        echo "  [ ] Mark completed tasks as [x] DONE?"
+        echo "  [ ] Document any new issues found?"
+        echo ""
+        echo "See: CONTRIBUTING.md → Pre-Action Checklists"
+        echo ""
+        read -p "Continue anyway? (y/n) " -n 1 -r
+        echo ""
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            exit 1
+        fi
+    fi
+fi
+
+echo "✅ Pre-commit check passed!"
+echo ""
+
+exit 0

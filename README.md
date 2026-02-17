@@ -3,7 +3,7 @@
 > A lightweight, ultra-fast Windows native application for AI-powered text assistance with global keyboard shortcuts.
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
-[![Tests Passing](https://img.shields.io/badge/Tests-365%2F365%20passing-brightgreen)](./docs/testing/PHASE3_ISSUES_INVENTORY.md)
+[![Tests Passing](https://img.shields.io/badge/Tests-365%2F365%20passing-brightgreen)](./docs/04_testing/PHASE3_ISSUES_INVENTORY.md)
 [![Coverage](https://img.shields.io/badge/Coverage-89%25-brightgreen)](#test-coverage)
 [![License](https://img.shields.io/badge/License-GPL--3.0-blue)](LICENSE)
 
@@ -106,7 +106,7 @@ python -m pytest tests/ -v
 - 🔴 Floating context menu (appears but unclickable ❌)
 - 🔴 Status icon (shows wrong state ❌)
 
-**Blocking Issues** ([Details here](docs/testing/PHASE3_ISSUES_INVENTORY.md)):
+**Blocking Issues** ([Details here](docs/05_review/PHASE3_ISSUES_INVENTORY.md)):
 1. Settings dialog closes entire app
 2. Status icon stays red with valid config
 3. Chat UI freezes during LLM response
@@ -227,20 +227,34 @@ app-quick-shortcut-ai-llm/
 }
 ```
 
-See [SPEC.md](docs/technical/SPEC.md) for complete configuration schema.
+See [SPEC.md](docs/01_input/SPEC.md) for complete configuration schema.
 
 ---
 
 ## 📚 Documentation
 
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development workflow and standards
-- **[SPEC.md](docs/technical/SPEC.md)** - Complete technical specification
-- **[STATUS.md](STATUS.md)** - Current project status and known issues
-- **[TODO.md](docs/planning/TODO.md)** - Implementation roadmap
-- **[PHASE_1_REVIEW.md](docs/planning/PHASE_1_REVIEW.md)** - Phase 1 detailed review
-- **[PHASE3_ISSUES_INVENTORY.md](docs/testing/PHASE3_ISSUES_INVENTORY.md)** - Current Phase 3 blocking issues
-- **[VSCODE_TESTING_GUIDE.md](docs/testing/VSCODE_TESTING_GUIDE.md)** - How to run tests in VS Code
-- **[QUICK_START_TESTS.md](docs/testing/QUICK_START_TESTS.md)** - 3-minute test startup guide
+Documentation follows a **7-step workflow** matching the development process:
+
+**Quick Navigation**:
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development workflow, checklists, git hooks
+- **[TODO.md](docs/02_planning/TODO.md)** - **SOURCE OF TRUTH** for task status
+- **[SPEC.md](docs/01_input/SPEC.md)** - Technical specification & features
+- **[PHASE3_ISSUES_INVENTORY.md](docs/05_review/PHASE3_ISSUES_INVENTORY.md)** - Current Phase 3 bugs
+
+**By Workflow Step**:
+| Step | Folder | Purpose |
+|------|--------|---------|
+| 1️⃣ Input | [docs/01_input/](docs/01_input/) | Requirements, specs, definitions |
+| 2️⃣ Planning | [docs/02_planning/](docs/02_planning/) | Plans, scope, TODO.md |
+| 3️⃣ Implementation | [docs/03_implementation/](docs/03_implementation/) | Technical decisions, architecture |
+| 4️⃣ Testing | [docs/04_testing/](docs/04_testing/) | Tests, guides, UAT |
+| 5️⃣ Review | [docs/05_review/](docs/05_review/) | Issues, feedback, validation |
+| 6️⃣ Release | [docs/06_release/](docs/06_release/) | Release notes, updated specs |
+| 7️⃣ Archive | [docs/07_archive/](docs/07_archive/) | Historical versions, obsolete docs |
+
+**Additional Resources**:
+- **[VSCODE_TESTING_GUIDE.md](docs/04_testing/VSCODE_TESTING_GUIDE.md)** - Run tests in VS Code
+- **[QUICK_START_TESTS.md](docs/04_testing/QUICK_START_TESTS.md)** - 3-minute test guide
 
 ---
 
@@ -353,4 +367,4 @@ This project is licensed under **GPL-3.0** - see [LICENSE](LICENSE) file for det
 
 **Built with ❤️ using Python + PySide6 + pytest**
 
-_Last updated: 2026-02-17 | Phase 3 In Progress | UAT Paused - Critical Issues Identified_
+_Last updated: 2026-02-17 | Phase 3 Code Complete | UAT Paused - 5 Critical Bugs Blocking | See [TODO.md](docs/02_planning/TODO.md) for status_
