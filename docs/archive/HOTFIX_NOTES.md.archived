@@ -1,0 +1,155 @@
+# 🔧 Quick Fixes - UAT Feedback Implementation
+
+**Date**: 2026-02-16
+**Status**: ✅ COMPLETE - All tests passing (365/365)
+
+---
+
+## Issues Found During UAT
+
+### 1. ❌ Test Connection Button Error
+**Problem**: "Test Connection" button threw error even when Ollama was running locally
+- User could run `ollama run gemma3:4b` successfully
+- But Settings dialog test failed
+
+**Root Cause**:
+- `LLMProviderFactory.create()` expects `config` parameter as a dictionary
+- Settings dialog was passing `base_url` and `api_key` as separate arguments
+- This caused a TypeError
+
+**Fix**:
+```python
+# BEFORE (incorrect)
+provider = self.llm_factory.create(
+    provider_type=provider_type,
+    base_url=base_url,           # ❌ Wrong!
+    api_key=api_key
+)
+
+# AFTER (correct)
+config = {
+    "base_url": base_url,
+    "api_key": api_key if api_key else "",
+}
+provider = self.llm_factory.create(
+    provider_type=provider_type,
+    config=config                 # ✅ Correct!
+)
+```
+
+**Status**: ✅ FIXED
+
+---
+
+### 2. 📊 Missing Available Models List
+**Problem**: User had to manually type model name instead of selecting from dropdown
+- "J'aurais aimé voir les modèles disponibles"
+- User wants to see `gemma3:4b`, `llama2`, etc. in a dropdown
+
+**Enhancement**:
+Changed `provider_model` from `QLineEdit` to `QComboBox` with:
+- Editable dropdown (user can select or type custom names)
+- "Refresh Models" button to fetch available models from the provider
+- Auto-refresh when provider type or URL changes
+- All 3 providers (Ollama, OpenAI, Anthropic) supported
+
+**Files Modified**:
+```
+src/ui/settings_dialog.py:
+- Line 99-101: Changed provider_model to QComboBox
+- Line 112-113: Connected signals for auto-refresh
+- Line 122-124: Added "Refresh Models" button
+- Line 296-299: Changed setText() to setEditText()
+- Line 359: Changed .text() to .currentText()
+- Lines 340-390: Added 3 new methods:
+  * _on_provider_type_changed() - refresh when type changes
+  * _on_provider_url_changed() - refresh when URL changes
+  * _refresh_available_models() - fetch and populate dropdown
+```
+
+**Status**: ✅ IMPLEMENTED
+
+---
+
+### 3. 🟢 Icon Color Clarification
+**Observation**: User saw GREEN icon at startup (not red/yellow as guide suggested)
+
+**Explanation**:
+- Green icon = ✅ Ready (configuration valid, health check passed)
+- Yellow icon = ⚠️ Checking (health check in progress)
+- Red icon = ❌ Error (configuration invalid or LLM unavailable)
+
+The application did health checks after configuration loaded, so GREEN at startup is **CORRECT** behavior!
+
+**Update**:
+- Modified UAT_DETAILED_GUIDE.md to clarify icon states
+- User's observation confirms the system is working correctly
+
+**Status**: ✅ CLARIFIED
+
+---
+
+## Test Results
+
+| Metric | Before | After |
+|--------|--------|-------|
+| Total Tests | 365 | 365 |
+| Passing | 365 | 365 ✅ |
+| Failing | 0 | 0 |
+| Settings Dialog Tests | 30/30 | 30/30 ✅ |
+| All UI Tests | 101/101 | 101/101 ✅ |
+| UAT Tests | 57/57 | 57/57 ✅ |
+
+---
+
+## How to Use New Features
+
+### Testing Provider Connection
+1. Go to Settings → Providers tab
+2. Select a provider and enter URL/API key
+3. Click **"Test Connection"** → Now works! ✅
+4. If successful: "✓ Connection successful!"
+
+### Selecting Available Models
+1. Enter Base URL (e.g., `http://localhost:11434`)
+2. Click **"Refresh Models"** button
+3. See dropdown populate with available models (e.g., `gemma3:4b`, `llama2`)
+4. Select model from dropdown OR type custom name
+5. Click **"Save Provider"**
+
+### Auto-Refresh Models
+- Models refresh automatically when:
+  - You change provider type
+  - You change the provider URL
+  - You click "Refresh Models" button
+
+---
+
+## Files Modified
+
+✅ `src/ui/settings_dialog.py` - Fixed test connection + added model listing
+✅ `UAT_DETAILED_GUIDE.md` - Clarified icon colors
+✅ All 365 tests passing
+
+---
+
+## Next Steps for User
+
+1. ✅ Re-test Provider Connection:
+   - Go to Settings
+   - Select provider with URL (`http://localhost:11434` for Ollama)
+   - Click "Test Connection" → Should succeed!
+
+2. ✅ Test Model Listing:
+   - Enter Ollama URL
+   - Click "Refresh Models"
+   - See available models in dropdown
+
+3. ✅ Continue UAT with confidence:
+   - Settings dialog now fully functional
+   - Can easily select providers and models
+   - Test button works correctly
+
+---
+
+**Status**: Ready to resume UAT testing! 🚀

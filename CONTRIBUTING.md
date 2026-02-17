@@ -45,20 +45,30 @@ We follow a strict **Task -> Plan -> Implementation -> Verification** cycle for 
 ## Project Structure
 
 - **`src/`**: Source code.
-- **`tests/`**: Test suite.
-- **`docs/`**: Documentation.
-  - **`planning/`**: Plans, roadmaps, reviews.
-  - **`technical/`**: Specs, audits, environment details.
-  - **`testing/`**: Test guides, UAT reports.
-  - **`logs/`**: Operations logs, hotfix notes.
-  - **`archive/`**: Obsolete documents.
+- **`tests/`**: Test suite (unit and integration tests).
+- **`docs/`**: Documentation (organized by type).
+  - **`planning/`**: Phase plans, reviews, roadmaps
+  - **`technical/`**: Specifications, technical details, definitions
+  - **`testing/`**: Test guides, UAT reports, issue inventory
+  - **`logs/`**: Operational logs (current session status)
+  - **`archive/`**: **Obsolete/consolidated documents** (historical reference only)
 - **`assets/`**: Images, icons, styles.
 
 ## Documentation Standards
 
-- **Update `STATUS.md`**: Keep the project dashboard current after every major task.
-- **Update `README.md`**: If entry points or installation steps change.
-- **Log Changes**: Record significant events in `docs/logs/`.
+### Authoritative Sources
+
+- **Current Status**: Update **`STATUS.md`** after every major session
+- **Project Overview**: Update **`README.md`** if features or phases change
+- **Phase 3 Issues**: See **`docs/testing/PHASE3_ISSUES_INVENTORY.md`** (authoritative for current bugs)
+- **Logs**: Update **`docs/logs/`** with operational notes
+
+### Consolidation Rules
+
+- **Do NOT create new status documents** if one exists (avoid duplication)
+- **Consolidate information** from multiple sources into single authoritative file
+- **Archive outdated docs** in `docs/archive/` with `.archived` suffix
+- **Never contradict** - if multiple docs exist for same topic, consolidate into one
 
 ## Asking for Help
 

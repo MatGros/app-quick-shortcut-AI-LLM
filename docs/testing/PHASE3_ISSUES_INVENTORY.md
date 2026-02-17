@@ -46,14 +46,23 @@
 
 ## 📊 Statut des Corrections Tentées
 
-| Correction | État | Problème |
+### Corrections Partiellement Réussies (Code implémenté mais bugs subsistent)
+
+| Correction | État | Détails |
 |-----------|------|---------|
-| Chat Ctrl+Enter fonctionne | ✅ OK | Application figée reste |
-| Réponses en français | ✅ OK | N/A |
-| Menu plus lisible | ✅ Partiel | Menu non-fonctionnel |
-| Icon update on settings | ❌ NE MARCHE PAS | Icône reste rouge |
-| closeEvent sur windows | ❌ NE MARCHE PAS | Settings ferme app |
-| processEvents pour UI | ❌ NE MARCHE PAS | App figée quand même |
+| Chat Ctrl+Enter | ✅ CODE OK | Signal `sig_input_submitted` connecté, handler `_on_chat_message_submitted()` ajouté, méthode `_stream_chat_response()` implémentée. **MAIS**: Application figée quand on appuie Ctrl+Enter (blocage UI principal) |
+| MenuItem click handlers | ✅ CODE OK | Ajouté `mousePressEvent()`, `enterEvent()`, `leaveEvent()` à MenuItem + signal `clicked`. **MAIS**: Menu items toujours non-clickables en pratique |
+| Test Connection Button | ✅ CODE OK | Corrigé signature `LLMProviderFactory.create()` pour passer dict config. **MAIS**: Icon reste rouge après config |
+| Réponses en français | ✅ OK | Tous les prompts mis à jour pour demander réponses en français |
+| Model dropdown | ✅ CODE OK | Changé QLineEdit → QComboBox, ajouté "Refresh Models" button, auto-fetch. **MAIS**: Pas testé en production |
+| closeEvent handlers | ✅ CODE OK | Ajouté `closeEvent()` à ResponseWindow, FloatingMenu, SettingsDialog. **MAIS**: Settings ferme encore l'app |
+| QApplication.processEvents() | ⚠️ PARTIEL | Ajouté dans boucles streaming pour UI responsiveness. **MAIS**: App figée quand même |
+
+### Résumé
+**Statut**: 8 corrections de code implémentées, mais **5 problèmes critiques persistent**. Les bugs sont probablement dus à:
+- Architecture UI incorrecte (parent/child relationships)
+- Besoin vrai threading pour non-blocking operations
+- Event propagation ou signal connections toujours cassées
 
 ---
 

@@ -3,7 +3,7 @@
 > A lightweight, ultra-fast Windows native application for AI-powered text assistance with global keyboard shortcuts.
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
-[![Tests Passing](https://img.shields.io/badge/Tests-213%2F213%20passing-brightgreen)](./PHASE_2_REVIEW.md)
+[![Tests Passing](https://img.shields.io/badge/Tests-365%2F365%20passing-brightgreen)](./docs/testing/PHASE3_ISSUES_INVENTORY.md)
 [![Coverage](https://img.shields.io/badge/Coverage-89%25-brightgreen)](#test-coverage)
 [![License](https://img.shields.io/badge/License-GPL--3.0-blue)](LICENSE)
 
@@ -92,35 +92,40 @@ python -m pytest tests/ -v
 - [x] Components signal-connected
 - ⚠️ No integration/visual tests yet (moved to Phase 3)
 
-### 🚧 Phase 3: LLM Integration & Testing (IN PROGRESS)
+### 🚧 Phase 3: LLM Integration & Testing (IN PROGRESS - UAT PAUSED)
 
-- [x] Real LLM streaming (Task #1 - partially done)
+**Status**: Code complete (365 tests passing) but **critical UI bugs blocking UAT**
+
+- [x] Real LLM streaming (Task #1 - done)
 - [x] Clipboard manager (Task #1 - done)
-- 🚧 Markdown rendering (Task #3 - TODO)
-- 🚧 Settings dialog (Task #4 - TODO)
-- [ ] Floating context menu
-- [ ] Chat streaming window
-- [ ] System tray integration
+- [x] Markdown rendering (Task #3 - done)
+- [x] Settings dialog (Task #4 - done, but closes app ❌)
+- [x] Auto-paste (Task #5 - done)
+- [x] Integration Tests (Task #6 - 365 tests passing ✅)
+- 🔴 Chat streaming (works but freezes UI ❌)
+- 🔴 Floating context menu (appears but unclickable ❌)
+- 🔴 Status icon (shows wrong state ❌)
 
-### 📋 Phase 3: Advanced Features (PLANNED)
+**Blocking Issues** ([Details here](docs/testing/PHASE3_ISSUES_INVENTORY.md)):
+1. Settings dialog closes entire app
+2. Status icon stays red with valid config
+3. Chat UI freezes during LLM response
+4. Menu items not clickable
+5. Windows system menu appears alongside app menu
 
-- [ ] Screenshot capture + Vision API
-- [ ] Clipboard management
-- [ ] Auto-paste to active window
-- [ ] Markdown rendering with syntax highlighting
+**Next**: Fix 5 critical issues before continuing UAT
 
 ### 📋 Phase 4: Polish (PLANNED)
 
 - [ ] SQLite history with search
-- [ ] Custom themes (dark/light QSS)
-- [ ] Settings GUI (providers, shortcuts, appearance)
 - [ ] Toast notifications
+- [ ] Dark/Light theme system (QSS)
+- [ ] Performance profiling and optimization
 
 ### 📋 Phase 5: Release (PLANNED)
 
-- [ ] Performance optimization
 - [ ] Packaging with Nuitka (< 50MB exe, < 2s startup)
-- [ ] Documentation & user guide
+- [ ] Final documentation & user guide
 - [ ] Release on GitHub
 
 ---
@@ -222,7 +227,7 @@ app-quick-shortcut-ai-llm/
 }
 ```
 
-See [SPEC.md](SPEC.md) for complete configuration schema.
+See [SPEC.md](docs/technical/SPEC.md) for complete configuration schema.
 
 ---
 
@@ -230,8 +235,10 @@ See [SPEC.md](SPEC.md) for complete configuration schema.
 
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development workflow and standards
 - **[SPEC.md](docs/technical/SPEC.md)** - Complete technical specification
+- **[STATUS.md](STATUS.md)** - Current project status and known issues
 - **[TODO.md](docs/planning/TODO.md)** - Implementation roadmap
 - **[PHASE_1_REVIEW.md](docs/planning/PHASE_1_REVIEW.md)** - Phase 1 detailed review
+- **[PHASE3_ISSUES_INVENTORY.md](docs/testing/PHASE3_ISSUES_INVENTORY.md)** - Current Phase 3 blocking issues
 - **[VSCODE_TESTING_GUIDE.md](docs/testing/VSCODE_TESTING_GUIDE.md)** - How to run tests in VS Code
 - **[QUICK_START_TESTS.md](docs/testing/QUICK_START_TESTS.md)** - 3-minute test startup guide
 
@@ -346,4 +353,4 @@ This project is licensed under **GPL-3.0** - see [LICENSE](LICENSE) file for det
 
 **Built with ❤️ using Python + PySide6 + pytest**
 
-_Last updated: 2026-02-15 | Phase 1 Complete | Ready for Phase 2_
+_Last updated: 2026-02-17 | Phase 3 In Progress | UAT Paused - Critical Issues Identified_

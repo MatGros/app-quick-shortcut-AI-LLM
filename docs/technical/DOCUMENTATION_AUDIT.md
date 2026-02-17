@@ -93,11 +93,27 @@
 
 ## ✅ Checklist Nettoyage
 
-- [ ] Archiver documents périmés
-- [ ] Mettre à jour README.md
-- [ ] Mettre à jour STATUS.md
-- [ ] Corriger UAT_DETAILED_GUIDE.md
-- [ ] Créer PHASE_3_STATUS.md
+- [x] Archiver documents périmés (9 files → docs/archive/)
+- [x] Mettre à jour README.md (test count 213→365, Phase 3 status)
+- [x] Mettre à jour STATUS.md (consolidé et complet)
+- [x] Corriger PHASE3_ISSUES_INVENTORY.md (ajouté historique corrections)
+- [x] Créer archive/README.md (guide archivage)
+- [x] Mettre à jour CONTRIBUTING.md (structure docs)
+
+## 📊 Résultats du Nettoyage (2026-02-17)
+
+**Avant**:
+- 27 fichiers markdown
+- 9 documents périmés/contradictoires
+- 4 documents dupliqués
+- STATUS.md incomplet
+
+**Après**:
+- 18 fichiers markdown actifs
+- 9 fichiers archivés (récupérables via git)
+- 1 source de vérité par sujet
+- STATUS.md et README.md à jour
+- PHASE3_ISSUES_INVENTORY.md = référence Phase 3
 - [ ] Vérifier PHASE_3_PLAN.md vs réalité
 - [ ] Documenter problèmes connus
 - [ ] Créer plan de test mis à jour
