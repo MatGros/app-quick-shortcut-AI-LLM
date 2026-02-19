@@ -1,8 +1,12 @@
 # AGENTS.md - AI Assistant Context
 
 **Format:** AGENTS.md Standard v1.0
-**Last Updated:** 2026-02-17
-**Supported Tools:** GitHub Copilot, Cursor, Windsurf, Google Jules, Aider, and other AI coding assistants
+**Last Updated:** 2026-02-19
+**Supported Tools:** Antigravity (Modular), GitHub Copilot, Cursor, Windsurf, Google Jules, Aider
+
+> [!NOTE]
+> Ce projet utilise désormais une configuration modulaire située dans le dossier `.agent/`.
+> Voir `.agent/skills/` pour les personnalités spécialisées et `.agent/workflows/` pour les automatisations.
 
 ---
 
@@ -39,6 +43,7 @@
 ## Key Conventions
 
 ### Code Style
+
 - **Language:** Python 3.11+
 - **Naming:** snake_case for functions/variables, CamelCase for classes
 - **Formatting:** Black formatter (line length: 88)
@@ -46,12 +51,14 @@
 - **Type Hints:** Required for all function signatures
 
 ### Documentation
+
 - **Main Docs:** UPPERCASE.md (SPEC.md, TODO.md, TECHNICAL_DECISIONS.md)
 - **Folder Intros:** README.md (lowercase)
 - **Docstrings:** Google style
 - **Comments:** Explain WHY, not WHAT
 
 ### File Organization
+
 - **Numbered Folders:** docs/01_input through docs/07_archive (7-step workflow)
 - **Source Code:** Organized by layer (core, ui, services, utils)
 - **Tests:** Mirrored structure (test_core, test_ui, test_services, test_docs)
@@ -61,22 +68,26 @@
 ## Development Standards
 
 ### Before Starting Work
+
 1. Check `docs/02_planning/TODO.md` for current tasks
 2. Check `docs/05_review/PHASE3_ISSUES_INVENTORY.md` for known bugs
 3. Read `docs/03_implementation/TECHNICAL_DECISIONS.md` for architecture decisions
 
 ### Testing
+
 - **Framework:** pytest
 - **Coverage Target:** > 80%
 - **Run:** `pytest tests/ -v --cov=src`
 - **Documentation Tests:** `python docs/verify_docs.py`
 
 ### Commits
+
 - **Style:** Conventional commits (feat:, fix:, docs:, test:)
 - **Message Format:** `feat: brief description of what changed`
 - **Example:** `feat: add screenshot region selection tool`
 
 ### Quality Gates
+
 - ✅ Tests must pass (pytest)
 - ✅ Code must be formatted (black)
 - ✅ Linting must pass (ruff)
@@ -87,17 +98,20 @@
 ## Source of Truth Documents
 
 ### `docs/02_planning/TODO.md`
+
 - Primary task tracking document
 - Update before committing changes
 - Format: Simple markdown with checkboxes
 - **This is what drives development decisions**
 
 ### `docs/05_review/PHASE3_ISSUES_INVENTORY.md`
+
 - Current bugs and blockers
 - 5 critical issues documented
 - Don't start features until bugs are fixed
 
 ### `docs/03_implementation/TECHNICAL_DECISIONS.md`
+
 - Architecture decisions and rationale
 - Why we chose specific libraries
 - Design patterns used
@@ -107,6 +121,7 @@
 ## Project Phases
 
 ### Phase 3 (Current - COMPLETE)
+
 - ✅ Full LLM provider integration
 - ✅ Complete UI implementation
 - ✅ 365 tests (89% coverage)
@@ -114,6 +129,7 @@
 - 📋 Awaiting Phase 4 bug fixes
 
 ### Phase 4 (Next)
+
 - [ ] Fix 5 critical bugs
 - [ ] Re-run UAT suite
 - [ ] Performance validation
@@ -154,11 +170,13 @@
 ## Build & Run Commands
 
 ### Development
+
 ```bash
 python -m src.main                    # Run application
 ```
 
 ### Testing
+
 ```bash
 pytest tests/ -v                      # Run all tests
 pytest tests/test_core/ -v            # Run specific test module
@@ -167,6 +185,7 @@ python docs/verify_docs.py            # Validate documentation
 ```
 
 ### Code Quality
+
 ```bash
 black src/ tests/                     # Format code
 ruff check src/ tests/                # Lint code
@@ -178,6 +197,7 @@ black --check src/ tests/             # Check formatting
 ## Dependencies
 
 ### Core (MINIMAL - optimize for < 50MB exe)
+
 - **PySide6-Essentials** (Qt6 minimal)
 - **pynput** (keyboard/mouse hooks)
 - **requests** (HTTP client)
@@ -186,12 +206,14 @@ black --check src/ tests/             # Check formatting
 - **Pillow** (image handling)
 
 ### Development
+
 - **pytest** (testing)
 - **pytest-qt** (Qt testing)
 - **black** (formatting)
 - **ruff** (linting)
 
 ### Build
+
 - **nuitka** (compile to native exe - preferred)
 - **pyinstaller** (alternative)
 
@@ -200,12 +222,14 @@ black --check src/ tests/             # Check formatting
 ## LLM Provider Support
 
 ### Implemented Providers
+
 1. **Ollama** - Local LLMs (Llama2, Mistral, etc.)
 2. **OpenAI** - GPT-3.5-turbo, GPT-4, GPT-4o
 3. **Anthropic** - Claude 3 (Sonnet, Opus)
 4. **OpenRouter** - Multi-model aggregation
 
 ### Adding New Provider
+
 1. Create file: `src/services/providers/new_provider.py`
 2. Implement `LLMProvider` abstract interface
 3. Add tests in `tests/test_services/test_providers/`
@@ -217,13 +241,13 @@ black --check src/ tests/             # Check formatting
 
 These should be maintained during development:
 
-| Metric | Target | Current | Status |
-|--------|--------|---------|--------|
-| Startup | < 2s | ~1.5s | ✅ Pass |
-| Memory | < 150MB | ~140MB | ✅ Pass |
-| First Token | < 200ms | ~180ms | ✅ Pass |
-| Menu Latency | < 100ms | ~95ms | ✅ Pass |
-| Exe Size | < 50MB | ~45MB | ✅ Pass |
+| Metric       | Target  | Current | Status  |
+| ------------ | ------- | ------- | ------- |
+| Startup      | < 2s    | ~1.5s   | ✅ Pass |
+| Memory       | < 150MB | ~140MB  | ✅ Pass |
+| First Token  | < 200ms | ~180ms  | ✅ Pass |
+| Menu Latency | < 100ms | ~95ms   | ✅ Pass |
+| Exe Size     | < 50MB  | ~45MB   | ✅ Pass |
 
 Don't make changes that degrade these metrics.
 
@@ -232,6 +256,7 @@ Don't make changes that degrade these metrics.
 ## Common Tasks
 
 ### Add New Feature
+
 1. Update `docs/02_planning/TODO.md`
 2. Check `docs/05_review/PHASE3_ISSUES_INVENTORY.md` for blockers
 3. Create feature branch
@@ -242,6 +267,7 @@ Don't make changes that degrade these metrics.
 8. Create pull request
 
 ### Fix a Bug
+
 1. Create issue/task in TODO.md
 2. Add test that reproduces bug
 3. Fix bug
@@ -250,7 +276,8 @@ Don't make changes that degrade these metrics.
 6. Commit with message: `fix: brief description`
 
 ### Update Documentation
-1. Edit relevant file in docs/0X_*/
+
+1. Edit relevant file in docs/0X\_\*/
 2. Run: `python docs/verify_docs.py`
 3. Ensure all 27 tests pass
 4. Commit with message: `docs: update XXXX`
@@ -279,11 +306,13 @@ git push
 ## Configuration
 
 ### Settings Storage
+
 - Location: `%APPDATA%\QuickShortcutAI\config.json`
 - Format: JSON
 - Schema: See `docs/06_release/UPDATED_SPEC.md`
 
 ### Environment Variables
+
 - Use for API keys (never commit)
 - Example: `OPENAI_API_KEY=sk-...`
 
@@ -292,6 +321,7 @@ git push
 ## Documentation Rules
 
 ### When to Update docs/
+
 - ✅ Architecture changes
 - ✅ New features (document in SPEC.md)
 - ✅ Process changes
@@ -299,6 +329,7 @@ git push
 - ❌ Small code tweaks
 
 ### Quality Gate
+
 - All documentation tests must pass
 - Run: `python docs/verify_docs.py`
 - Failing tests block commits
@@ -308,10 +339,12 @@ git push
 ## Windows-Specific Notes
 
 ### Supported Versions
+
 - Windows 10 (1809+)
 - Windows 11
 
 ### Platform-Specific Code
+
 - Use `win32_helpers.py` for Windows API calls
 - Test on both Windows 10 and 11
 - Use platform-agnostic paths where possible
@@ -330,6 +363,7 @@ git push
 ## Tools This File Supports
 
 This AGENTS.md file is read by:
+
 - ✅ GitHub Copilot (Visual Studio Code)
 - ✅ Cursor IDE
 - ✅ Windsurf IDE
