@@ -138,6 +138,7 @@ class InputManager(QThread):
         self._event_queue: queue.Queue = queue.Queue(maxsize=64)
         self._last_x = 0
         self._last_y = 0
+        self._last_trigger_time = 0         # Anti-debounce: évite clics dupliqués
 
     # ── Public API ──────────────────────────────────────────────
 
@@ -206,11 +207,18 @@ class InputManager(QThread):
                 if nCode >= 0 and wParam in (WM_RBUTTONDOWN, WM_RBUTTONUP):
                     if _is_ctrl_pressed():
                         if wParam == WM_RBUTTONUP:
+                            # Anti-debounce: ignore clics dans les 500ms
+                            current_time = time.time()
+                            if current_time - self._last_trigger_time < 0.5:
+                                return 1  # Ignorer le clic dupliqué
+                            self._last_trigger_time = current_time
+
                             data = ctypes.cast(
                                 lParam, ctypes.POINTER(MSLLHOOKSTRUCT)
                             ).contents
                             x, y = data.pt.x, data.pt.y
-                            action = "summarize" if _is_shift_pressed() else "show_menu"
+                            # Always show menu - user can select action from there
+                            action = "show_menu"
                             try:
                                 self._event_queue.put_nowait((action, x, y))
                             except queue.Full:

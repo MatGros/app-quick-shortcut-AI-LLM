@@ -200,9 +200,9 @@ class InlineResponseWindow(QWidget):
     def finish_streaming(self):
         """Called when streaming is complete. Starts auto-hide timer."""
         self._is_streaming = False
-        logger.debug("Inline: Streaming finished, starting 10s auto-hide timer")
-        # Auto-hide after 10 seconds of showing the result
-        self.auto_hide_timer.start(10000)
+        logger.debug("Inline: Streaming finished, starting 30s auto-hide timer")
+        # Auto-hide after 30 seconds of showing the result (plenty of time to read)
+        self.auto_hide_timer.start(30000)
 
     def enterEvent(self, event):
         """Pause timer on hover"""
@@ -215,7 +215,7 @@ class InlineResponseWindow(QWidget):
         """Resume timer on leave if not streaming"""
         if not self._is_streaming and self.isVisible():
             logger.debug("Inline: Resume auto-hide timer (leave)")
-            self.auto_hide_timer.start(5000) # Give 5 more seconds
+            self.auto_hide_timer.start(15000) # Give 15 more seconds to read result
         super().leaveEvent(event)
 
     def mousePressEvent(self, event):
