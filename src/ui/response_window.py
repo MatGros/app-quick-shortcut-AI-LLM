@@ -120,6 +120,7 @@ class ResponseWindow(QMainWindow):
         ResponseWindow._initialized = True
 
         self.setWindowTitle("Quick Shortcut AI - Chat")
+        self.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint)
         self.setGeometry(100, 100, 800, 600)
 
         # Dark theme

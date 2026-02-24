@@ -14,7 +14,7 @@ class HealthCheckResult:
         self.message = message
 
     def __repr__(self) -> str:
-        status = "✅" if self.passed else "❌"
+        status = "[OK]" if self.passed else "[ERR]"
         return f"{status} {self.name}: {self.message}"
 
 
@@ -64,7 +64,7 @@ class HealthCheckManager:
             else:
                 self.results.append(
                     HealthCheckResult(
-                        "Config Integrity", True, f"✓ {len(providers)} providers, {len(providers)} OK"
+                        "Config Integrity", True, f"{len(providers)} providers OK"
                     )
                 )
         except Exception as e:
@@ -85,7 +85,11 @@ class HealthCheckManager:
             provider_type = default_provider_config.get("type", "ollama")
 
             try:
-                provider = LLMProviderFactory.create(provider_type, default_provider_config)
+                init_config = {
+                    "base_url": default_provider_config.get("base_url") or "http://localhost:11434",
+                    "api_key": default_provider_config.get("api_key", ""),
+                }
+                provider = LLMProviderFactory.create(provider_type, init_config)
                 is_healthy = provider.health_check()
 
                 if is_healthy:
@@ -93,7 +97,7 @@ class HealthCheckManager:
                         HealthCheckResult(
                             "LLM Connectivity",
                             True,
-                            f"✓ {default_provider_config.get('name')} is accessible",
+                            f"{default_provider_config.get('name')} is accessible",
                         )
                     )
                 else:
@@ -101,7 +105,7 @@ class HealthCheckManager:
                         HealthCheckResult(
                             "LLM Connectivity",
                             False,
-                            f"✗ {default_provider_config.get('name')} is not responding",
+                            f"! {default_provider_config.get('name')} is not responding",
                         )
                     )
             except Exception as e:
@@ -131,7 +135,7 @@ class HealthCheckManager:
             test_file.unlink()
 
             self.results.append(
-                HealthCheckResult("Permissions", True, "✓ AppData write access OK")
+                HealthCheckResult("Permissions", True, "AppData write access OK")
             )
         except Exception as e:
             self.results.append(

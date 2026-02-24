@@ -255,11 +255,12 @@ class SettingsDialog(QDialog):
         self.animation_speed.setValue(animation_speed)
 
     def _load_providers(self):
-        """Load providers into list."""
+        """Load providers into list and select default."""
         self.provider_list.clear()
         providers = self.config_service.get_providers()
         default_provider = self.config_service.get("default_provider")
 
+        default_item = None
         for provider in providers:
             provider_id = provider.get("id", "unknown")
             provider_name = provider.get("name", provider_id)
@@ -267,7 +268,7 @@ class SettingsDialog(QDialog):
 
             # Bold text if default
             if provider_id == default_provider:
-                item_text = f"★ {provider_name}"
+                item_text = f"* {provider_name}"
             else:
                 item_text = provider_name
 
@@ -277,10 +278,24 @@ class SettingsDialog(QDialog):
             item = QListWidgetItem(item_text)
             item.setData(Qt.UserRole, provider_id)
             self.provider_list.addItem(item)
+            
+            if provider_id == default_provider:
+                default_item = item
+
+        # Select default item if found
+        if default_item:
+            self.provider_list.setCurrentItem(default_item)
+        elif self.provider_list.count() > 0:
+            self.provider_list.setCurrentRow(0)
 
     def _on_provider_selected(self):
         """Load selected provider details."""
         if not self.provider_list.selectedItems():
+            self.provider_name.clear()
+            self.provider_url.clear()
+            self.provider_api_key.clear()
+            self.provider_model.clear()
+            self.provider_enabled.setChecked(False)
             return
 
         item = self.provider_list.selectedItems()[0]
@@ -323,21 +338,21 @@ class SettingsDialog(QDialog):
                 QMessageBox.information(
                     self,
                     "Connection Test",
-                    "✓ Connection successful!\n"
+                    "[OK] Connection successful!\n"
                     "Provider is responding correctly."
                 )
             else:
                 QMessageBox.warning(
                     self,
                     "Connection Test",
-                    "✗ Connection failed.\n"
+                    "[ERR] Connection failed.\n"
                     "Provider did not respond successfully."
                 )
         except Exception as e:
             QMessageBox.critical(
                 self,
                 "Connection Test",
-                f"✗ Error testing connection:\n{str(e)}"
+                f"[ERR] Error testing connection:\n{str(e)}"
             )
 
     def _on_provider_type_changed(self):
@@ -459,6 +474,20 @@ class SettingsDialog(QDialog):
 
     def _save_settings(self):
         """Save all settings to config."""
+        # Auto-save the currently selected provider details
+        if self.provider_list.selectedItems():
+            provider_id = self.provider_list.selectedItems()[0].data(Qt.UserRole)
+            provider_config = {
+                "id": provider_id,
+                "name": self.provider_name.text(),
+                "type": self.provider_type.currentText(),
+                "base_url": self.provider_url.text() or self.provider_url.placeholderText() or "http://localhost:11434",
+                "api_key": self.provider_api_key.text(),
+                "default_model": self.provider_model.currentText(),
+                "enabled": self.provider_enabled.isChecked() if self.provider_enabled.isChecked() else True, # default to True
+            }
+            self.config_service.add_provider(provider_id, provider_config)
+
         # Save appearance
         self.config_service.set("appearance.theme", self.theme_combo.currentText())
         self.config_service.set("appearance.font_family", self.font_family.text())
@@ -474,9 +503,9 @@ class SettingsDialog(QDialog):
         logger.info("Settings saved")
 
     def closeEvent(self, event):
-        """Handle window close - just hide instead of closing app"""
-        logger.debug("SettingsDialog close requested - accepting dialog close")
-        # For modal dialogs, close is handled by accept/reject
-        # But we prevent the entire app from closing
-        self.accept()  # Close the dialog properly
-        event.accept()  # Allow the dialog close
+        """Handle window close - hide instead of closing app"""
+        logger.debug("SettingsDialog close requested - hiding dialog")
+        # Don't call self.accept() here — it's already called by _on_ok().
+        # Simply hide the dialog to prevent the app from exiting.
+        self.hide()
+        event.ignore()

@@ -94,6 +94,7 @@ class MenuItem(QLabel):
         if event.button() == Qt.LeftButton:
             logger.debug(f"MenuItem clicked: {self.action.label}")
             self.clicked.emit()
+            event.accept() # Stop propagation to parent
         super().mousePressEvent(event)
 
     def enterEvent(self, event):
@@ -135,19 +136,32 @@ class FloatingMenu(QWidget):
         self.current_selection = -1
 
         # Frameless window setup
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.Tool | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.Tool | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setFocusPolicy(Qt.StrongFocus)
 
-        # Dark theme
-        palette = QPalette()
-        palette.setColor(QPalette.Window, QColor(30, 30, 30))  # Dark background
-        self.setPalette(palette)
+        # Apply stylesheet for rounding and proper opacity
+        self.setStyleSheet("""
+            QWidget#FloatingMenuContainer {
+                background-color: rgba(35, 35, 35, 245); 
+                border: 1px solid #444444;
+                border-radius: 8px;
+            }
+        """)
 
-        # Layout
-        self.layout = QVBoxLayout()
-        self.layout.setContentsMargins(0, 0, 0, 0)
-        self.layout.setSpacing(0)
-        self.setLayout(self.layout)
+        # Main container to handle transparency/rounding better
+        self.container = QWidget(self)
+        self.container.setObjectName("FloatingMenuContainer")
+        self.container_layout = QVBoxLayout(self)
+        self.container_layout.setContentsMargins(2, 2, 2, 2)
+        self.container_layout.addWidget(self.container)
+
+        # Layout inside container
+        self.layout = QVBoxLayout(self.container)
+        self.layout.setContentsMargins(4, 4, 4, 4)
+        self.layout.setSpacing(2)
+        
+        self.setMinimumWidth(220)
 
         # Shadow effect
         shadow = QGraphicsDropShadowEffect()
@@ -155,13 +169,13 @@ class FloatingMenu(QWidget):
         shadow.setColor(QColor(0, 0, 0, 150))
         shadow.setOffset(0, 5)
         self.setGraphicsEffect(shadow)
-
+ 
         # Animation setup
         self.animation = QPropertyAnimation(self, b"windowOpacity")
-        self.animation.setDuration(200)  # 200ms fade-in
+        self.animation.setDuration(200)
         self.animation.setStartValue(0.0)
         self.animation.setEndValue(1.0)
-
+ 
         self.setWindowOpacity(0)
 
     def add_action(self, action_id: str, label: str, icon: Optional[QIcon] = None):
@@ -172,22 +186,37 @@ class FloatingMenu(QWidget):
         # Create and add menu item
         item = MenuItem(action, self)
         self.menu_items.append(item)
-        # Connect item click to action trigger
-        item.clicked.connect(lambda: self.action_triggered(action_id))
+        # Connect item click to action trigger (bind action_id securely)
+        item.clicked.connect(lambda a=action_id: self.action_triggered(a))
         self.layout.addWidget(item)
 
     def show_at_cursor(self):
         """Show menu at current cursor position with animation"""
         cursor_pos = QCursor.pos()
+        logger.info(f"FloatingMenu: Showing at {cursor_pos}")
 
-        # Position menu
+        # Position menu smartly
         self._position_smart(cursor_pos)
-
+        
         # Show and animate
         self.show()
+        self.raise_()
+        self.activateWindow()
+        self.setFocus()
         self.animation.start()
 
-        logger.debug(f"FloatingMenu shown at {cursor_pos}")
+    def focusOutEvent(self, event):
+        """Close menu when it loses focus (clicking outside)"""
+        logger.debug(f"FloatingMenu: focusOutEvent triggered, reason: {event.reason()}")
+        super().focusOutEvent(event)
+        # Small delay to allow click on items to register first
+        QTimer.singleShot(250, self.close_if_not_active)
+
+    def close_if_not_active(self):
+        """Check if we should really close"""
+        if not self.isActiveWindow() and self.isVisible():
+            logger.info("FloatingMenu: Auto-closing due to focus loss")
+            self.close_menu()
 
     def _position_smart(self, pos: QPoint):
         """
@@ -267,21 +296,8 @@ class FloatingMenu(QWidget):
 
             super().keyPressEvent(event)
 
-    def mouseMoveEvent(self, event):
-        """Highlight item under mouse"""
-        for i, item in enumerate(self.menu_items):
-            if item.geometry().contains(event.pos()):
-                if self.current_selection != i:
-                    self.current_selection = i
-                    self.update_selection_display()
-                return
-
-    def mousePressEvent(self, event):
-        """Handle menu item click"""
-        for i, item in enumerate(self.menu_items):
-            if item.geometry().contains(event.pos()):
-                self.action_triggered(self.actions[i].action_id)
-                return
+    # mouseMoveEvent and mousePressEvent were redundant and removed to prevent double triggers.
+    # Individual MenuItem objects handle their own hover and click events.
 
     def select_next(self):
         """Select next menu item"""

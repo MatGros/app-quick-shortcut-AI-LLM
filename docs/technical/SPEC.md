@@ -8,19 +8,19 @@
 
 ## VUE D'ENSEMBLE
 
-| Champ | Valeur |
-|:------|:-------|
-| **Nom** | Quick Shortcut AI LLM Assistant |
-| **Langage** | Python 3.10+ |
-| **Framework** | PySide6-Essentials (Qt 6.x) |
-| **Plateforme** | Windows 10 (1809+), Windows 11 (x64) |
-| **Licence** | GPL-3.0-only |
-| **Backend LLM** | Ollama, OpenAI, Anthropic, OpenRouter (multi-provider) |
-| **GUI** | Qt frameless windows avec QSS styling |
-| **Système d'entrée** | Hooks natifs (pynput) - Pas de dépendance AutoHotkey |
-| **Base de données** | SQLite 3 (historique, logs) |
-| **Configuration** | JSON dans `%APPDATA%\QuickShortcutAI\` |
-| **Packaging** | Nuitka (exe standalone < 50MB) |
+| Champ                | Valeur                                                 |
+| :------------------- | :----------------------------------------------------- |
+| **Nom**              | Quick Shortcut AI LLM Assistant                        |
+| **Langage**          | Python 3.10+                                           |
+| **Framework**        | PySide6-Essentials (Qt 6.x)                            |
+| **Plateforme**       | Windows 10 (1809+), Windows 11 (x64)                   |
+| **Licence**          | GPL-3.0-only                                           |
+| **Backend LLM**      | Ollama, OpenAI, Anthropic, OpenRouter (multi-provider) |
+| **GUI**              | Qt frameless windows avec QSS styling                  |
+| **Système d'entrée** | Hooks natifs (pynput) - Pas de dépendance AutoHotkey   |
+| **Base de données**  | SQLite 3 (historique, logs)                            |
+| **Configuration**    | JSON dans `%APPDATA%\QuickShortcutAI\`                 |
+| **Packaging**        | Nuitka (exe standalone < 50MB)                         |
 
 ---
 
@@ -28,28 +28,28 @@
 
 > **Légende Statut :** 📋 Planifiée · 🚧 En cours · ✅ Déployée
 
-| ID | Fonctionnalité | Description | Priorité | Statut |
-|:---|:---------------|:-----------|:---------|:------:|
-| **F-01** | Hooks Globaux (Input Manager) | Détection native Ctrl+Clic Droit sans AHK | P0 | 📋 |
-| **F-02** | Menu Contextuel Frameless | Fenêtre flottante moderne avec animations | P0 | 📋 |
-| **F-03** | Abstraction LLM Providers | Interface unifiée pour Ollama, OpenAI, Anthropic, OpenRouter | P0 | 📋 |
-| **F-04** | Fenêtre Chat Streaming | Single-instance avec affichage token-par-token | P0 | 📋 |
-| **F-05** | Gestion Clipboard | Lecture/écriture robuste (texte + images) | P1 | 📋 |
-| **F-06** | Auto-Paste | Collage automatique avec gestion focus intelligente | P1 | 📋 |
-| **F-07** | Capture d'Écran + Vision | Sélection région avec intégration Vision API | P1 | 📋 |
-| **F-08** | Notifications Toast | Notifications custom Qt (pas Windows natives) | P1 | 📋 |
-| **F-09** | Historique SQLite | Recherche, export, statistiques | P1 | 📋 |
-| **F-10** | Interface Settings | Configuration multi-tabs (providers, shortcuts, apparence) | P0 | 📋 |
-| **F-11** | Health Checks | Vérifications démarrage (config, LLM, permissions) | P0 | 📋 |
-| **F-12** | Système Thèmes | Dark/Light mode avec QSS dynamique | P1 | 📋 |
-| **F-13** | Raccourcis Clavier | Customisables avec détection conflits | P0 | 📋 |
-| **F-14** | Tray Icon | Intégration system tray avec états | P1 | 📋 |
-| **F-15** | Prompts Personnalisés | Templates avec variables et substitution | P1 | 📋 |
-| **F-16** | Rendu Markdown | Markdown → HTML avec syntax highlighting | P1 | 📋 |
-| **F-17** | Copy Response | Export plain text, markdown, rich HTML | P1 | 📋 |
-| **F-18** | Retry Mechanism | Relance requête avec gestion erreurs | P1 | 📋 |
-| **F-19** | Chat Context Management | Conversations multi-tours avec gestion contexte | P1 | 📋 |
-| **F-20** | Portable Mode | Exe standalone sans installation Python | P0 | 📋 |
+| ID       | Fonctionnalité                | Description                                                  | Priorité | Statut |
+| :------- | :---------------------------- | :----------------------------------------------------------- | :------- | :----: |
+| **F-01** | Hooks Globaux (Input Manager) | Détection native Ctrl+Clic Droit sans AHK                    | P0       |   📋   |
+| **F-02** | Menu Contextuel Frameless     | Fenêtre flottante moderne avec animations                    | P0       |   📋   |
+| **F-03** | Abstraction LLM Providers     | Interface unifiée pour Ollama, OpenAI, Anthropic, OpenRouter | P0       |   📋   |
+| **F-04** | Chat & Inline Response        | Fenêtre chat ET popup inline auto-resize près de la souris   | P0       |   📋   |
+| **F-05** | Gestion Clipboard             | Lecture/écriture robuste (texte + images)                    | P1       |   📋   |
+| **F-06** | Auto-Paste                    | Collage automatique avec gestion focus intelligente          | P1       |   📋   |
+| **F-07** | Capture d'Écran + Vision      | Sélection région avec intégration Vision API                 | P1       |   📋   |
+| **F-08** | Notifications Toast           | Notifications custom Qt (pas Windows natives)                | P1       |   📋   |
+| **F-09** | Historique SQLite             | Recherche, export, statistiques                              | P1       |   📋   |
+| **F-10** | Interface Settings            | Configuration multi-tabs (providers, shortcuts, apparence)   | P0       |   📋   |
+| **F-11** | Health Checks                 | Vérifications démarrage (config, LLM, permissions)           | P0       |   📋   |
+| **F-12** | Système Thèmes                | Dark/Light mode avec QSS dynamique                           | P1       |   📋   |
+| **F-13** | Raccourcis Clavier            | Customisables avec détection conflits                        | P0       |   📋   |
+| **F-14** | Tray Icon                     | Intégration system tray avec états                           | P1       |   📋   |
+| **F-15** | Prompts Personnalisés         | Templates avec variables et substitution                     | P1       |   📋   |
+| **F-16** | Rendu Markdown                | Markdown → HTML avec syntax highlighting                     | P1       |   📋   |
+| **F-17** | Copy Response                 | Export plain text, markdown, rich HTML                       | P1       |   📋   |
+| **F-18** | Retry Mechanism               | Relance requête avec gestion erreurs                         | P1       |   📋   |
+| **F-19** | Chat Context Management       | Conversations multi-tours avec gestion contexte              | P1       |   📋   |
+| **F-20** | Portable Mode                 | Exe standalone sans installation Python                      | P0       |   📋   |
 
 ---
 
@@ -58,6 +58,7 @@
 ### 🎨 Principes de Design
 
 **Modernité Absolue :**
+
 - ❌ Pas de menus systèmes Windows (ternes, datés)
 - ❌ Pas de MsgBox/InputBox standards
 - ✅ Tous les composants custom-stylés (QSS)
@@ -65,6 +66,7 @@
 - ✅ Animations fluides sur TOUS les éléments
 
 **Fluidité Extrême :**
+
 - Latence perceptible : < 100ms (critère non-négociable)
 - Animations 60 FPS minimum
 - Scroll parfaitement smooth
@@ -72,6 +74,7 @@
 - Aucun lag ou micro-stuttering
 
 **Beauté Intemporelle :**
+
 - Palette minimaliste (2-3 couleurs principales)
 - Espacement cohérent (8px grid system)
 - Typographie claire (Segoe UI ou Inter)
@@ -81,6 +84,7 @@
 ### 📐 Grid System & Spacing
 
 **Base Unit : 8px**
+
 ```
 Spacing: 8px, 16px, 24px, 32px, 48px
 Padding: 12px, 16px, 20px
@@ -91,6 +95,7 @@ Radius: 4px (petit), 8px (menu), 12px (cards)
 ### 🎯 Palette Couleurs
 
 **Dark Mode (Par défaut) :**
+
 ```css
 Primary BG:    #1a1a1a  /* Presque noir, pas pur #000 */
 Secondary BG:  #2d2d2d  /* Cards, hover areas */
@@ -104,6 +109,7 @@ Warning:       #f59e0b  /* Ambre pour warnings *)
 ```
 
 **Light Mode :**
+
 ```css
 Primary BG:    #ffffff  /* Blanc pur *)
 Secondary BG:  #f3f4f6  /* Gris très clair *)
@@ -116,12 +122,14 @@ Accent:        #0066ff  /* Bleu (identique *)
 ### ✍️ Typographie
 
 **Font Stack :**
+
 ```css
 Primary:   'Segoe UI', 'Inter', -apple-system, sans-serif
 Monospace: 'Fira Code', 'Courier New', monospace
 ```
 
 **Sizes & Weights :**
+
 ```
 Titles:      14-16px, weight 600 (semi-bold)
 Body:        13px, weight 400 (regular)
@@ -132,6 +140,7 @@ Code:        12px, monospace, weight 500
 ### 🎬 Animations Standardisées
 
 **Duration :**
+
 ```
 Micro:   100ms  (tooltips, state changes)
 Quick:   200ms  (menu open, dialog appear)
@@ -140,6 +149,7 @@ Slow:    500ms  (page transitions, only if necessary)
 ```
 
 **Easing Curves :**
+
 ```
 Intro:    QEasingCurve.OutCubic    (smooth, natural)
 Outro:    QEasingCurve.OutCubic    (consistent)
@@ -148,6 +158,7 @@ Never:    QEasingCurve.Linear      (avoid - feels mechanical)
 ```
 
 **Examples :**
+
 ```python
 # Menu fade-in
 anim = QPropertyAnimation(self, b"windowOpacity")
@@ -172,6 +183,7 @@ button.setStyleSheet("""
 ### 🪟 Composants Custom
 
 **Buttons :**
+
 - Minimum 40px height (touch-friendly)
 - Padding: 12px 24px
 - Radius: 6px
@@ -180,6 +192,7 @@ button.setStyleSheet("""
 - Disabled: Gris pâle, curseur désactivé
 
 **Text Fields :**
+
 - Padding: 12px
 - Radius: 6px
 - Border: 1px, couleur tertiary
@@ -187,12 +200,14 @@ button.setStyleSheet("""
 - Transition: 150ms smooth
 
 **Modals & Dialogs :**
+
 - Shadow: `0 20px 25px -5px rgba(0, 0, 0, 0.3)` (dark) / lighter version (light)
 - Backdrop: Semi-transparent (#000 @ 30% ou #000 @ 10% light)
 - Animation: Slide-up + fade-in 200ms
 - Close: Touche Esc, click backdrop (si permettable)
 
 **Cards & Containers :**
+
 - Padding: 20px
 - Radius: 8px
 - Border: Subtle line ou ombre douce
@@ -201,11 +216,13 @@ button.setStyleSheet("""
 ### 🌓 Dark/Light Transition
 
 **Switching :**
+
 - Instantané (pas de cross-fade pour eviter flashing)
 - QApplication.setStyleSheet() appliqué globalement
 - Tous les windows reçoivent le nouvel apparence
 
 **System Detection :**
+
 - Windows Registry : `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize`
 - Clé : `AppsUseLightTheme` (1=light, 0=dark)
 - Detect au démarrage, monitorer pour auto-switch
@@ -219,6 +236,7 @@ button.setStyleSheet("""
 **Objectif** : Intercepter `Ctrl+Clic Droit` globalement sans dépendance AutoHotkey.
 
 **Architecture Technique:**
+
 - **Classe** : `InputManager(QObject)` dans `src/core/input_manager.py`
 - **Bibliothèque** : `pynput>=1.7.6` pour hooks bas niveau
 - **Thread** : QThread dédié pour listener (non-bloquant)
@@ -227,6 +245,7 @@ button.setStyleSheet("""
   - `sig_text_selected(str text)` — Texte sélectionné détecté
 
 **Implémentation:**
+
 ```python
 class InputManager(QObject):
     sig_context_menu_requested = Signal(int, int)
@@ -243,11 +262,13 @@ class InputManager(QObject):
 ```
 
 **Déclencheur** :
+
 - Trigger : `Ctrl + Clic Droit` (event release, pas press)
 - Latence cible : < 50ms signal → UI
 - Gestion état clavier/souris pour éviter faux positifs
 
 **Performance Critiques:**
+
 - QThread worker avec pynput.mouse.Listener
 - Pas de blocking calls dans main thread
 - Debounce 50ms pour éviter doubles-trigger
@@ -259,6 +280,7 @@ class InputManager(QObject):
 **Objectif** : Afficher menu d'actions moderne et fluide à la position du curseur.
 
 **Design Visual Exceptionnel:**
+
 - **Fenêtre** : `QWidget` avec flags `Qt.FramelessWindowHint + Qt.WindowStaysOnTopHint + Qt.NoDropShadowWindowHint`
 - **Apparence** :
   - Coins arrondis : `border-radius: 8px` (smooth, modern)
@@ -276,6 +298,7 @@ class InputManager(QObject):
   - Max height: 600px avec QScrollArea si besoin
 
 **Interactions Fluides:**
+
 - **Hover Effect** :
   - Background change: `#3a3a3a` (dark) ou `#f3f4f6` (light)
   - Transition: 150ms QEasingCurve.OutCubic
@@ -294,6 +317,7 @@ class InputManager(QObject):
   - État désactivé: Gris pâle #6b7280 avec opacity 0.5
 
 **Fonctionnalités:**
+
 1. **Actions Affichées** :
    - 📝 Summarize — Résumer texte sélectionné
    - 🌐 Translate — Traduire en français/anglais
@@ -319,6 +343,7 @@ class InputManager(QObject):
    - Filtrage en temps réel
 
 **Performance:**
+
 - Affichage < 100ms après trigger
 - Pas de lag sur navigation clavier
 - Smooth animations à 60 FPS
@@ -356,6 +381,7 @@ class LLMProvider(ABC):
 ```
 
 **Factory Pattern:**
+
 ```python
 class LLMProviderFactory:
     @staticmethod
@@ -397,6 +423,7 @@ class LLMProviderFactory:
    - Format : OpenAI compatible
 
 **Gestion Erreurs:**
+
 - Timeout : 30s par défaut (configurable)
 - Rate limits : Retry exponential backoff
 - Auth invalide : Clear error message
@@ -409,6 +436,7 @@ class LLMProviderFactory:
 **Objectif** : Single-instance window affichant réponses LLM fluide, moderne, agréable.
 
 **Pattern Singleton:**
+
 ```python
 class ResponseWindow(QWidget):
     _instance = None
@@ -420,6 +448,7 @@ class ResponseWindow(QWidget):
 ```
 
 **Design Visuel Moderne:**
+
 - **Window** : Frameless (Qt.FramelessWindowHint) avec drag-to-move sur title bar
 - **Size** : 800x600px default, min 400x300px, max-resizable
 - **Padding** : 16px tout autour
@@ -486,6 +515,7 @@ class ResponseWindow(QWidget):
    - Subtle border top
 
 **Streaming Display Fluide:**
+
 - Token buffering : Accumule tokens 50ms avant update (smooth, pas de flicker)
 - Typewriter effect : Apparence progressive sans "jump"
 - Markdown rendering : Code blocks avec syntax coloring
@@ -493,18 +523,21 @@ class ResponseWindow(QWidget):
 - Cursor clignotant si génération en cours (subtle animation)
 
 **Performance Targets:**
+
 - Premier token → affichage : < 200ms (CRITIQUE pour perceptio de rapidité)
 - Streaming fluide : 60 FPS (no stuttering)
 - Scroll performance : Instant même 10k tokens
 - Memory: Limit last 100 messages in memory (older = loaded from history)
 
 **Streaming Display:**
+
 - Token buffering : Accumule 50ms de tokens avant update UI
 - Smooth append : Utilise QTimer pour batch updates
 - Typewriter effect : Apparence progressive sans flashing
 - Markdown rendering : Voir F-16
 
 **Performance Targets:**
+
 - Premier token → affichage : < 200ms
 - Streaming fluide : 60 FPS
 - Scroll performance : Pas de lag même réponses 10k tokens
@@ -544,6 +577,7 @@ class ClipboardManager(QObject):
 ```
 
 **Format Support:**
+
 - Plain text : UTF-8
 - HTML : Rich formatting
 - Images : PNG, JPEG, BMP
@@ -576,6 +610,7 @@ class AutoPaster(QObject):
 ```
 
 **Implementation Details:**
+
 - Window handle : `ctypes.windll.user32.GetForegroundWindow()`
 - Set focus : `SetForegroundWindow(hwnd)`
 - Delay : Configurable (100ms default, évite timing issues)
@@ -583,6 +618,7 @@ class AutoPaster(QObject):
 - Error handling : Fallback si focus fail (notification user)
 
 **Configuration:**
+
 - `auto_paste_enabled` : bool
 - `auto_paste_delay_ms` : int (50-500ms)
 
@@ -595,6 +631,7 @@ class AutoPaster(QObject):
 **Classe** : `ScreenshotTool` dans `src/ui/screenshot_tool.py`
 
 **Modes de Capture:**
+
 1. **Full Screen** : Entire monitor
 2. **Region Selection** : UI interactive overlay
    - Semi-transparent gray overlay
@@ -605,26 +642,31 @@ class AutoPaster(QObject):
 4. **Clipboard** : Image existante dans clipboard
 
 **Region Selection UI:**
+
 - QWidget overlay fullscreen semi-transparent
 - Mouse drag pour sélectionner région
 - Affichage dimensions en temps réel
 - Keyboard : Esc cancel, Enter confirm
 
 **Vision API Integration:**
+
 - Format image : PNG pour transmission
 - Conversion base64 : `base64.b64encode(png_bytes)`
 - Format par provider :
   - **Anthropic** :
     ```json
-    {"type": "image", "source": {"type": "base64", "media_type": "image/png", "data": "..."}}
+    {
+      "type": "image",
+      "source": { "type": "base64", "media_type": "image/png", "data": "..." }
+    }
     ```
   - **OpenAI** :
     ```json
-    {"type": "image_url", "image_url": {"url": "data:image/png;base64,..."}}
+    { "type": "image_url", "image_url": { "url": "data:image/png;base64,..." } }
     ```
   - **Ollama** :
     ```json
-    {"images": ["base64_string"]}
+    { "images": ["base64_string"] }
     ```
 
 ---
@@ -636,6 +678,7 @@ class AutoPaster(QObject):
 **Classe** : `ToastNotification(QWidget)` dans `src/ui/toast_notification.py`
 
 **Design Premium:**
+
 - **Position** : Bottom-right corner, 24px from edges
 - **Size** : 320px width, 68px height (+ icon/close), max 200px text
 - **Stacking** : Vertical avec 12px gap (nouvelles au top)
@@ -646,14 +689,15 @@ class AutoPaster(QObject):
 
 **Types avec Esthétique Moderne:**
 
-| Type | BG Color | Icon | Text Color | Animation |
-|:-----|:---------|:-----|:-----------|:----------|
-| ✅ **Success** | `#10b981` | ✓ | `#ffffff` | Slide-in right + bounce 300ms |
-| 🔵 **Info** | `#3b82f6` | ℹ | `#ffffff` | Slide-in right 250ms smooth |
-| ⚠️ **Warning** | `#f59e0b` | ! | `#ffffff` | Slide-in right 250ms |
-| ❌ **Error** | `#ef4444` | ✗ | `#ffffff` | Slide-in right + pulse 300ms |
+| Type           | BG Color  | Icon | Text Color | Animation                     |
+| :------------- | :-------- | :--- | :--------- | :---------------------------- |
+| ✅ **Success** | `#10b981` | ✓    | `#ffffff`  | Slide-in right + bounce 300ms |
+| 🔵 **Info**    | `#3b82f6` | ℹ    | `#ffffff`  | Slide-in right 250ms smooth   |
+| ⚠️ **Warning** | `#f59e0b` | !    | `#ffffff`  | Slide-in right 250ms          |
+| ❌ **Error**   | `#ef4444` | ✗    | `#ffffff`  | Slide-in right + pulse 300ms  |
 
 **Composants:**
+
 - **Icon** : 24px, left side, padding 8px right
 - **Text** : Segoe UI 13px, semi-bold, truncate if long
 - **Close Button** : ✕ 16px top-right, hover highlight, fade on hover
@@ -662,11 +706,13 @@ class AutoPaster(QObject):
 - **Progress Bar** (optionnel) : Thin line at bottom showing remaining time
 
 **Interactive:**
+
 - Hover : Slight lift (shadow increase), opacity boost
 - Click : Dismiss immediately, emit signal
 - Keyboard : Esc key dismisses all toasts
 
 **Example Advanced:**
+
 ```python
 # Success avec auto-dismiss rapide
 NotificationService.show_toast(
@@ -741,6 +787,7 @@ class HistoryService:
 ```
 
 **Features:**
+
 - Full-text search sur content
 - Filtrage par date range
 - Statistiques : token count, response times
@@ -756,6 +803,7 @@ class HistoryService:
 **Classe** : `SettingsDialog(QDialog)` dans `src/ui/settings_dialog.py`
 
 **Design Global:**
+
 - **Window** : Frameless, 900x600px, shadow=20px
 - **Title Bar** : 44px avec icon + title "Settings"
 - **Layout** : Left sidebar + main content area
@@ -771,6 +819,7 @@ class HistoryService:
 **Tabs Détaillés:**
 
 **1. Providers Tab** 🔗
+
 - List de providers (scrollable)
 - Item layout : Icon + Name + Status indicator
   - Connected: 🟢 Green
@@ -784,6 +833,7 @@ class HistoryService:
   - Close auto après success, ou click OK
 
 **2. Shortcuts Tab ⌨️**
+
 - List : Icon | Action Name | Current Binding | Reset button
 - Hover sur item : Edit button appears
 - Click Edit :
@@ -795,6 +845,7 @@ class HistoryService:
 - Animation: Items fade-in staggered
 
 **3. Appearance Tab 🎨**
+
 - Theme selector : Radio buttons (Dark / Light / System auto)
   - Preview: Show color swatch
   - Immediate apply (no restart)
@@ -805,6 +856,7 @@ class HistoryService:
   - Smooth transition between styles
 
 **4. Behavior Tab ⚙️**
+
 - Checkboxes (with descriptions underneath):
   - Auto-paste enabled
   - Clipboard monitoring
@@ -817,6 +869,7 @@ class HistoryService:
   - Max history items: 100-10000
 
 **5. Advanced Tab 🔧**
+
 - Debug logging toggle
 - Network timeout spinner
 - Cache size info + "Clear Cache" button
@@ -827,6 +880,7 @@ class HistoryService:
   - Confirmation: "This will reset ALL settings. Are you sure?"
 
 **Visual Polish:**
+
 - **Transitions** : Tab change = fade + slight slide (200ms)
 - **Spinners/Sliders** : Colored tracks matching theme
 - **Checkboxes** : Custom styled (blue check on hover/selected)
@@ -836,6 +890,7 @@ class HistoryService:
 - **Success Feedback** : Green checkmark if saved
 
 **Save/Load:**
+
 - Save button : Persist to ConfigService + toast "Settings saved"
 - Cancel button : Discard changes (ask if modified)
 - Changes apply : Real-time pour appearance, on save pour behavior
@@ -870,6 +925,7 @@ class HistoryService:
    - Librairies tierces présentes
 
 **UI Feedback:**
+
 - Splash screen ou dialog
 - Progress bar avec étapes
 - Messages status pour chaque check
@@ -881,6 +937,7 @@ class HistoryService:
 ### [F-12] Système Thèmes — P1
 
 **Fichiers QSS:**
+
 - `assets/styles/dark.qss` — Dark theme
 - `assets/styles/light.qss` — Light theme
 
@@ -898,27 +955,30 @@ class ThemeManager(QObject):
 ```
 
 **Variables QSS (CSS-like):**
+
 ```css
 /* dark.qss */
 QWidget {
-    background-color: #1e1e1e;
-    color: #ffffff;
+  background-color: #1e1e1e;
+  color: #ffffff;
 }
 
-QLineEdit, QTextEdit {
-    background-color: #2d2d2d;
-    border: 1px solid #444;
-    border-radius: 4px;
+QLineEdit,
+QTextEdit {
+  background-color: #2d2d2d;
+  border: 1px solid #444;
+  border-radius: 4px;
 }
 
 QPushButton {
-    background-color: #0066cc;
-    color: white;
-    border-radius: 4px;
+  background-color: #0066cc;
+  color: white;
+  border-radius: 4px;
 }
 ```
 
 **Switching Dynamique:**
+
 - No restart needed
 - Apply instantly à toutes windows
 - Save preference à config.json
@@ -932,22 +992,24 @@ QPushButton {
 
 **Raccourcis Par Défaut:**
 
-| Raccourci | Action | Configurable |
-|:----------|:-------|:-------------|
-| `Ctrl+Right Click` | Afficher menu contextuel | ✅ Oui |
-| `Ctrl+Shift+S` | Capture d'écran | ✅ Oui |
-| `Esc` | Fermer menu / Annuler | ❌ Non |
-| `Ctrl+W` | Fermer fenêtre active | ✅ Oui |
-| `Ctrl+,` | Ouvrir Settings | ✅ Oui |
-| `Ctrl+H` | Afficher Historique | ✅ Oui |
+| Raccourci          | Action                   | Configurable |
+| :----------------- | :----------------------- | :----------- |
+| `Ctrl+Right Click` | Afficher menu contextuel | ✅ Oui       |
+| `Ctrl+Shift+S`     | Capture d'écran          | ✅ Oui       |
+| `Esc`              | Fermer menu / Annuler    | ❌ Non       |
+| `Ctrl+W`           | Fermer fenêtre active    | ✅ Oui       |
+| `Ctrl+,`           | Ouvrir Settings          | ✅ Oui       |
+| `Ctrl+H`           | Afficher Historique      | ✅ Oui       |
 
 **Features:**
+
 - Visual shortcut recorder
 - Conflict detection (system + other apps)
 - Reset to defaults
 - Persist dans config.json
 
 **Conflict Detection:**
+
 ```python
 def check_conflict(self, shortcut: str) -> bool:
     """Vérifier si raccourci conflicte avec système"""
@@ -961,12 +1023,14 @@ def check_conflict(self, shortcut: str) -> bool:
 **Classe** : `TrayIcon(QSystemTrayIcon)` dans `src/ui/tray_icon.py`
 
 **Icônes d'État:**
+
 - 🟢 **Ready** : Vert, API connectée
 - 🟡 **Busy** : Jaune, génération en cours
 - 🔴 **Error** : Rouge, API down/erreur
 - ⏸️ **Suspended** : Gris/barre, hooks suspendus
 
 **Menu Contextuel:**
+
 ```
 ┌─ Show Window
 ├─ Quick Actions
@@ -979,6 +1043,7 @@ def check_conflict(self, shortcut: str) -> bool:
 ```
 
 **Features:**
+
 - Tooltip affichant status + model actuel
 - Double-click : Afficher/masquer app
 - Right-click : Menu contextuel
@@ -991,6 +1056,7 @@ def check_conflict(self, shortcut: str) -> bool:
 **Classe** : `PromptManager` dans `src/core/prompt_manager.py`
 
 **Format Prompt:**
+
 ```json
 {
   "id": "summarize",
@@ -1006,6 +1072,7 @@ def check_conflict(self, shortcut: str) -> bool:
 ```
 
 **Variables Templates:**
+
 - `{selected_text}` : Texte sélectionné
 - `{clipboard}` : Contenu clipboard
 - `{date}` : Date actuelle (YYYY-MM-DD)
@@ -1013,6 +1080,7 @@ def check_conflict(self, shortcut: str) -> bool:
 - `{file_name}` : Nom fichier actif (si détectable)
 
 **Storage:**
+
 - Defaults : `assets/prompts/default_prompts.json`
 - User custom : `%APPDATA%\QuickShortcutAI\custom_prompts.json`
 - Merge : Defaults + user customs
@@ -1024,6 +1092,7 @@ def check_conflict(self, shortcut: str) -> bool:
 **Classe** : `MarkdownRenderer` dans `src/utils/markdown_renderer.py`
 
 **Features:**
+
 - Markdown → HTML conversion
 - Syntax highlighting : Pygments
 - Equations : Support optionnel KaTeX
@@ -1031,7 +1100,8 @@ def check_conflict(self, shortcut: str) -> bool:
 - Code blocks : Colored, language-specific
 
 **Extensions:**
-```python
+
+````python
 markdown.markdown(text, extensions=[
     'fenced_code',       # ``` code blocks
     'tables',            # | col1 | col2 |
@@ -1039,9 +1109,10 @@ markdown.markdown(text, extensions=[
     'extra',             # Extra Markdown features
     'codehilite'         # Syntax coloring via Pygments
 ])
-```
+````
 
 **CSS Styling:**
+
 - Light & dark variants
 - Proper padding/margins
 - Link colors (blue, underlined)
@@ -1053,11 +1124,13 @@ markdown.markdown(text, extensions=[
 ### [F-17] Copy Response — P1
 
 **Formats Supportés:**
+
 - 📄 **Plain Text** : Texte brut sans formatting
 - 📝 **Markdown** : Markdown source (si copyAsMarkdown enabled)
 - 🎨 **Rich HTML** : HTML avec styles CSS
 
 **Implémentation:**
+
 ```python
 def copy_response(self, format: str = 'auto'):
     """Copy current response en format spécifié"""
@@ -1076,12 +1149,14 @@ def copy_response(self, format: str = 'auto'):
 ### [F-18] Retry Mechanism — P1
 
 **Behavior:**
+
 - Bouton "Retry" dans response window
 - Relance requête avec même contexte/model
 - Supprime dernière réponse assistant de l'historique
 - Permet correction réponses incomplètes/mauvaises
 
 **Implementation:**
+
 ```python
 def retry(self):
     """Relancer dernière requête"""
@@ -1094,19 +1169,21 @@ def retry(self):
 ### [F-19] Chat Context Management — P1
 
 **Gestion Contexte Multi-Turns:**
+
 - System prompt (optionnel, au début)
 - User messages + Assistant responses (alternés)
 - Context window limit : Couper si > max tokens
 - Support conversation history (voir F-09)
 
 **Exemple Payload:**
+
 ```json
 {
   "messages": [
-    {"role": "system", "content": "You are a helpful assistant."},
-    {"role": "user", "content": "Hello"},
-    {"role": "assistant", "content": "Hi there!"},
-    {"role": "user", "content": "Who are you?"}
+    { "role": "system", "content": "You are a helpful assistant." },
+    { "role": "user", "content": "Hello" },
+    { "role": "assistant", "content": "Hi there!" },
+    { "role": "user", "content": "Who are you?" }
   ]
 }
 ```
@@ -1118,6 +1195,7 @@ def retry(self):
 **Objectif** : Exe standalone sans installation Python requise.
 
 **Packaging avec Nuitka:**
+
 ```bash
 python -m nuitka --standalone --onefile \
   --windows-disable-console \
@@ -1132,6 +1210,7 @@ python -m nuitka --standalone --onefile \
 ```
 
 **Target Metrics:**
+
 - Taille exe : < 50MB (idéal 30-40MB)
 - Startup cold : < 2 secondes
 - Startup warm : < 1 seconde
@@ -1139,6 +1218,7 @@ python -m nuitka --standalone --onefile \
 - CPU idle : < 1%
 
 **Optimisations:**
+
 1. PySide6-Essentials au lieu de PySide6 complet
 2. UPX compression (réduction ~30% de taille)
 3. Lazy imports (charger modules à l'usage)
@@ -1146,6 +1226,7 @@ python -m nuitka --standalone --onefile \
 5. Exclude unused Qt modules
 
 **Distribution:**
+
 - Single .exe file (pas besoin Python, pas besoin installation)
 - Portable : Config dans `./config/` relative ou `%APPDATA%`
 - Optional installer (Inno Setup)
@@ -1243,20 +1324,22 @@ app-quick-shortcut-ai-llm/
 
 ### Dépendances Principales
 
-| Bibliothèque | Version | Raison | Taille |
-|:-----------|:--------|:-------|:-------|
-| `PySide6-Essentials` | >= 6.5.0 | Qt minimal (pas full PySide6) | ~80MB |
-| `pynput` | >= 1.7.6 | Hooks clavier/souris globaux | ~100KB |
-| `requests` | >= 2.31.0 | HTTP client pour LLM APIs | ~500KB |
-| `markdown` | >= 3.5 | Markdown → HTML | ~200KB |
-| `Pygments` | >= 2.16 | Syntax highlighting (optionnel) | ~2MB |
-| `Pillow` | >= 10.0 | Image handling (optionnel) | ~2MB |
+| Bibliothèque         | Version   | Raison                          | Taille |
+| :------------------- | :-------- | :------------------------------ | :----- |
+| `PySide6-Essentials` | >= 6.5.0  | Qt minimal (pas full PySide6)   | ~80MB  |
+| `pynput`             | >= 1.7.6  | Hooks clavier/souris globaux    | ~100KB |
+| `requests`           | >= 2.31.0 | HTTP client pour LLM APIs       | ~500KB |
+| `markdown`           | >= 3.5    | Markdown → HTML                 | ~200KB |
+| `Pygments`           | >= 2.16   | Syntax highlighting (optionnel) | ~2MB   |
+| `Pillow`             | >= 10.0   | Image handling (optionnel)      | ~2MB   |
 
 **Optional Dependencies (lazy import):**
+
 - `markdown` + `Pygments` : Chargés uniquement si rendering enabled
 - `Pillow` : Chargé seulement si screenshot utilisé
 
 **Build Dependencies:**
+
 - `nuitka` >= 1.9 : Compilation Python → C (packaging)
 - `black`, `ruff` : Code formatting & linting
 - `pytest`, `pytest-qt` : Testing
@@ -1339,6 +1422,7 @@ app-quick-shortcut-ai-llm/
 ## PRÉREQUIS SYSTÈME
 
 **Minimum :**
+
 - Windows 10 (version 1809 ou ultérieure)
 - Windows 11
 - Processeur : x64 (pas 32-bit)
@@ -1347,12 +1431,14 @@ app-quick-shortcut-ai-llm/
 - Connexion internet (pour cloud LLM providers)
 
 **Recommandé :**
+
 - Windows 11
 - 8GB RAM
 - SSD pour amélioration réactivité
 - Provider LLM local (Ollama) pour latence minimale
 
 **Optional :**
+
 - Admin rights (certains Windows versions peuvent exiger pour hooks)
 - Ollama installé localement : https://ollama.ai
 
@@ -1363,6 +1449,7 @@ app-quick-shortcut-ai-llm/
 ### Version [0.1.0] — Initial Planning — 2026-02-15
 
 #### Added
+
 - Initial project structure
 - CAHIER_DES_CHARGES.md specification
 - IMPLEMENTATION_PLAN.md roadmap
@@ -1370,6 +1457,7 @@ app-quick-shortcut-ai-llm/
 - TODO.md progress tracking
 
 #### Planned Phases
+
 - **Phase 0** : Setup initial (structure, dependencies)
 - **Phase 1** : Fondation (input hooks, LLM abstraction, config)
 - **Phase 2** : UI Core (menu, chat window, shortcuts)
@@ -1382,12 +1470,14 @@ app-quick-shortcut-ai-llm/
 ## NOTES DE MAINTENANCE
 
 **Lorsqu'une feature est supprimée :**
+
 ```markdown
 ~~[F-XX] Deprecated Feature — Removed in v1.2~~
 _Reason: Feature was replaced by F-YY providing better UX._
 ```
 
 **Lorsqu'une feature change de statut :**
+
 ```
 [F-01] ... — Status: 🚧 En cours (Depuis 2026-02-15)
 ```

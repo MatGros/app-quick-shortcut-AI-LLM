@@ -84,14 +84,15 @@ class TestProvidersTab:
     def test_default_provider_marked(self, settings_dialog, config_service):
         """Test default provider is marked with star"""
         config_service.set("default_provider", "ollama-local")
-        # Reload dialog
-        settings_dialog._load_providers()
+        # Reload dialog with mocked provider to prevent network calls
+        with patch('src.ui.settings_dialog.LLMProviderFactory.create'):
+            settings_dialog._load_providers()
 
-        # At least one item should be marked with ★
+        # At least one item should be marked with *
         found_star = False
         for i in range(settings_dialog.provider_list.count()):
             item = settings_dialog.provider_list.item(i)
-            if "★" in item.text():
+            if "*" in item.text():
                 found_star = True
                 break
 

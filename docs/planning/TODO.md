@@ -8,6 +8,7 @@
 ---
 
 ## Légende Statut
+
 - `[ ]` TODO - Non commencé
 - `[~]` IN PROGRESS - En cours
 - `[x]` DONE - Terminé
@@ -18,6 +19,7 @@
 ## [DONE] Phase 0: Setup Projet (Semaine 0)
 
 ### Structure & Configuration
+
 - [x] Créer SPEC.md - Spécification technique complète (2026-02-15)
 - [x] Créer TODO.md - Tracking d'implémentation (2026-02-15)
 - [x] Créer Plan (goofy-gliding-turing.md) - Plan complet d'architecture (2026-02-15)
@@ -30,6 +32,7 @@
 - [ ] Créer README.md basique
 
 ### Environnement Dev
+
 - [ ] Setup Python 3.10+ venv
 - [ ] Installer PySide6-Essentials (pas full PySide6)
 - [ ] Installer dev tools (black, ruff, pytest, pytest-qt)
@@ -41,9 +44,11 @@
 ## [DONE] Phase 1: Foundation (Semaine 1-2)
 
 ### F-01: Input Hooks (Global Keyboard/Mouse)
+
 - [!] DEFERRED TO PHASE 2 - Requires PySide6 (Qt) for QThread signals
 
 ### F-03: LLM Provider Abstraction ✅
+
 - [x] Créer `src/core/llm_provider.py` (ABC) - DONE
 - [x] Interface : stream_chat(), get_models(), health_check(), supports_vision() - DONE
 - [x] Créer `src/core/provider_factory.py` - DONE (integrated in llm_provider.py)
@@ -57,6 +62,7 @@
 - [x] Tests : 14 tests passing, 84%+ coverage - DONE
 
 ### F-10: Configuration Service ✅
+
 - [x] Créer `src/core/config_service.py` (Singleton) - DONE
 - [x] Schema config.json (providers, shortcuts, appearance, behavior) - DONE
 - [x] Load/Save dans %APPDATA%\QuickShortcutAI\ - DONE
@@ -65,6 +71,7 @@
 - [x] Tests : 14 tests passing, 93% coverage - DONE
 
 ### F-11: Health Checks ✅
+
 - [x] Créer `src/services/health_check.py` - DONE
 - [x] Check 1: Config integrity - DONE
 - [x] Check 2: LLM connectivity (5s timeout) - DONE
@@ -73,79 +80,176 @@
 
 ---
 
-## [IN PROGRESS] Phase 2: UI Core (Semaine 3) 🚧
+## [DONE] Phase 2: UI Core (Semaine 3) ✅
 
 ### Infrastructure Setup
-- [~] Setup PySide6-Essentials + Qt plugins (Task #6)
-- [~] Create main.py entry point (Task #8)
-- [ ] Configure pytest-qt for UI testing
+
+- [x] Setup PySide6-Essentials + Qt plugins (Task #6)
+- [x] Create main.py entry point (Task #8)
+- [x] Configure pytest-qt for UI testing
 
 ### F-01: Global Input Hooks ✅
-- [~] Créer `src/core/input_manager.py` (Task #1)
-- [~] Capture Ctrl+Right-Click globally
-- [~] QThread for non-blocking hook listening
-- [~] Signal-based event emission (thread-safe)
-- [~] Tests: positioning, event filtering, signals
+
+- [x] Créer `src/core/input_manager.py` (Task #1)
+- [x] Capture Ctrl+Right-Click globally
+- [x] QThread for non-blocking hook listening
+- [x] Signal-based event emission (thread-safe)
+- [x] Tests: positioning, event filtering, signals
 
 ### F-02: Floating Menu (Context Menu) ✅
-- [~] Créer `src/ui/floating_menu.py` (Task #2)
-- [~] QWidget frameless (Qt.FramelessWindowHint, Qt.Tool)
-- [~] Design : rounded corners (8px), shadow, fade-in 200ms
-- [~] Layout : icon + text rows, separators
-- [~] Actions : Summarize, Translate, Custom Prompt, Screenshot, Chat
-- [~] Keyboard navigation (arrows, Enter, Esc)
-- [~] Smart positioning (cursor, edge detection, multi-monitor)
-- [~] Signal `sig_action_selected(action_id: str)`
-- [~] Tests UI : positioning, keyboard nav, animations
+
+- [x] Créer `src/ui/floating_menu.py` (Task #2)
+- [x] QWidget frameless (Qt.FramelessWindowHint, Qt.Tool)
+- [x] Design : rounded corners (8px), shadow, fade-in 200ms
+- [x] Layout : icon + text rows, separators
+- [x] Actions : Summarize, Translate, Custom Prompt, Screenshot, Chat
+- [x] Keyboard navigation (arrows, Enter, Esc)
+- [x] Smart positioning (cursor, edge detection, multi-monitor)
+- [x] Signal `sig_action_selected(action_id: str)`
+- [x] Tests UI : positioning, keyboard nav, animations
 
 ### F-04: Response Window (Chat Streaming) ✅
-- [~] Créer `src/ui/response_window.py` (Task #3)
-- [~] Singleton pattern ou instance tracking
-- [~] QTextEdit read-only pour chat area
-- [~] Auto-scroll avec détection user scroll
-- [~] Créer `src/ui/widgets/auto_expanding_text.py` (input area)
-  - [~] Min 40px, max 200px
-  - [~] Auto-expand on textChanged
-- [~] Toolbar : Stop, Copy, Settings buttons
-- [~] Status bar : provider + model info
-- [~] Token buffering (50ms) pour smooth streaming
-- [~] Tests UI : singleton, scroll, resize, streaming
+
+- [x] Créer `src/ui/response_window.py` (Task #3)
+- [x] Singleton pattern ou instance tracking
+- [x] QTextEdit read-only pour chat area
+- [x] Auto-scroll avec détection user scroll
+- [x] Créer `src/ui/widgets/auto_expanding_text.py` (input area)
+  - [x] Min 40px, max 200px
+  - [x] Auto-expand on textChanged
+- [x] Toolbar : Stop, Copy, Settings buttons
+- [x] Status bar : provider + model info
+- [x] Token buffering (50ms) pour smooth streaming
+- [x] Tests UI : singleton, scroll, resize, streaming
 
 ### F-13: Keyboard Shortcuts ✅
-- [~] Créer `src/core/shortcut_manager.py` (Task #4)
-- [~] Enregistrement raccourcis globaux
-- [~] Détection conflits
-- [~] Defaults : Ctrl+Right Click, Ctrl+Shift+S, Esc, Ctrl+W
-- [~] Customization via Settings
-- [~] Persistence in config.json
-- [~] Tests : conflict detection, registration
+
+- [x] Créer `src/core/shortcut_manager.py` (Task #4)
+- [x] Enregistrement raccourcis globaux
+- [x] Détection conflits
+- [x] Defaults : Ctrl+Right Click, Ctrl+Shift+S, Esc, Ctrl+W
+- [x] Customization via Settings
+- [x] Persistence in config.json
+- [x] Tests : conflict detection, registration
 
 ### F-14: System Tray Integration ✅
-- [~] Créer `src/ui/tray_icon.py` (Task #5)
-- [~] QSystemTrayIcon avec menu
-- [~] États : Ready (vert), Busy (jaune), Error (rouge)
-- [~] Menu : Quick Actions, Settings, Exit
-- [~] Tooltip avec status
-- [~] Notification fallback si toasts fail
-- [~] Tests : state changes, menu actions
+
+- [x] Créer `src/ui/tray_icon.py` (Task #5)
+- [x] QSystemTrayIcon avec menu
+- [x] États : Ready (vert), Busy (jaune), Error (rouge)
+- [x] Menu : Quick Actions, Settings, Exit
+- [x] Tooltip avec status
+- [x] Notification fallback si toasts fail
+- [x] Tests : state changes, menu actions
 
 ### Testing & Documentation
-- [~] Phase 2 Tests: > 80% coverage (Task #7)
-- [~] Phase 2 Documentation & Review (Task #9)
+
+- [x] Phase 2 Tests: > 80% coverage (Task #7)
+- [x] Phase 2 Documentation & Review (Task #9)
 
 ---
 
-## [TODO] Phase 3: LLM Integration & Streaming (Semaine 3-4)
+## [ON HOLD] Phase 3: LLM Integration & Fixes UAT (Semaine 3-4) 🚧
 
-### Streaming Implementation
-- [ ] Créer `src/core/llm_worker.py` (QThread)
-- [ ] Stream tokens via signal `sig_token_received(str)`
-- [ ] Token buffering (50ms window) pour perf UI
-- [ ] Cancellation support (stop button)
-- [ ] Error handling avec retry logic
-- [ ] Tests : streaming, cancellation, errors
+**STATUS**: PAUSED - 5 critical bugs blocking UAT
+**STRATEGY**: Phase 3B approach - isolated patch on dedicated branch
+**See**: docs/planning/PHASE_3B_PLAN.md (New strategy: keyboard + QThread fix)
 
-### Additional Providers
+---
+
+## [PLANNED] Phase 3B: Hotkeys & Threading Patch (This Week) 🚀
+
+**Branch**: `phase-3b/hotkeys-threading`
+**Duration**: 3-5 days (Mon-Fri)
+**Target**: Fix all 5 blocking bugs via minimal architecture changes
+**Success Criteria**: All tests pass + UAT complete + zero crashes
+
+### Day 1-2: Hotkeys Replacement
+- [ ] **Task 3B.1**: Replace pynput → keyboard library
+  - [ ] pip uninstall pynput && pip install keyboard
+  - [ ] Refactor src/core/input_manager.py (copy code from docs/08_audit/PRACTICAL_SOLUTIONS_CODE_SNIPPETS.md)
+  - [ ] pytest tests/test_core/test_input_manager.py PASS
+  - [ ] Manual test: Ctrl+Shift+Right → Menu appears
+  - [ ] Commit: "feat(phase3b): replace pynput with keyboard library"
+
+### Day 2-3: Threading Fix
+- [ ] **Task 3B.2**: Implement QThread worker pattern
+  - [ ] Add StreamingWorker(QObject) class to src/main.py
+  - [ ] Refactor _stream_chat_response() to use QThread
+  - [ ] Add signal handlers (_on_token_received, _on_streaming_complete, _on_streaming_error)
+  - [ ] pytest tests/test_ui/ -k streaming PASS
+  - [ ] Manual test: Ctrl+Enter → UI responsive, tokens progressive
+  - [ ] Commit: "feat(phase3b): implement QThread worker pattern for streaming"
+
+### Day 3-4: Other Bug Fixes
+- [ ] **Task 3B.3**: Fix Settings dialog (QDialog closeEvent)
+  - [ ] src/ui/settings_dialog.py: Verify QDialog inheritance
+  - [ ] Fix parent/child relationships
+  - [ ] Manual test: OK → dialog closes, app continues
+
+- [ ] **Task 3B.4**: Fix Health Check updates
+  - [ ] Connect settings save signal → health_check.run_check()
+  - [ ] Update tray icon on result
+  - [ ] Manual test: Change config → icon updates
+
+- [ ] **Task 3B.5**: Debug Menu click issues
+  - [ ] Test if fixed by keyboard library replacement
+  - [ ] If not: debug signal connections
+  - [ ] Manual test: Click menu item → action works
+
+- [ ] **Task 3B.6**: Commit all fixes
+  - [ ] Commit: "fix(phase3b): settings, health check, menu issues"
+
+### Day 4-5: UAT & Merge Decision
+- [ ] **Task 3B.7**: Full User Acceptance Tests
+  - [ ] Run PHASE_3B_TEST_PLAN.md (docs/testing/)
+  - [ ] pytest tests/ -v --cov=src (>= 89% coverage)
+  - [ ] Manual tests: All 5 bugs ✅ fixed
+  - [ ] Stress test: 5-min no crashes
+  - [ ] Create PHASE_3B_REVIEW.md with results
+
+- [ ] **Task 3B.8**: Merge or Fallback Decision
+  - [ ] If ALL PASS: git merge --no-ff phase-3b/hotkeys-threading → main
+  - [ ] If FAIL: Document issues + evaluate rewrite options
+  - [ ] Update status in TODO.md
+
+---
+
+## [AFTER 3B] Phase 3: Continue LLM Integration (Conditional)
+
+**Only if Phase 3B succeeds**. Otherwise, re-evaluate architecture.
+
+### 🛑 Priorité 1 : Bugs Critiques (Bloquants UAT)
+
+- [x] **Task 3.1** (UAT 3) : Fix Settings closeEvent (FIXED in 3B)
+- [x] **Task 3.2** (UAT 1) : Fix Health Check (FIXED in 3B)
+
+### 🐛 Priorité 2 : Bugs Menu Contextuel (Retours UAT)
+
+- [ ] **Task 3.5** (UAT 4) : Suppress Windows natif context menu (pynput hook override)
+- [ ] **Task 3.6** (UAT 5) : Menu trop transparent et ne se ferme pas après clic gauche en dehors
+- [ ] **Task 3.4** : Fix Menu click events (actions inopérantes via la souris)
+
+### ✨ Priorité 3 : Refonte UX : Inline Response Window (UAT 7) & Threading (Bug 3.3)
+
+- [ ] Créer `src/ui/inline_response_window.py` (fenêtre flottante, bord à bord avec la sélection, auto-resize)
+- [ ] Rediriger "Summarize", "Translate", etc. vers cette vue au lieu du Chat global (laissant Chat global uniquement pour les discussions générales)
+- [ ] Implémenter le `src/core/llm_worker.py` (QThread) pour libérer l'UI (Fix Bug 3.3 Freezing UI)
+- [ ] Ajuster le behavior de "Summarize" pour éviter la confusion sur la sélection (UAT 6, ex: ajouter une indication visuelle de ce qui a été sélectionné)
+
+### 🚀 Priorité 4 : Streaming Backend Complet (Historique Phase 3)
+
+**Streaming Implementation (Partiellement DONE)**
+
+- [x] Créer `src/core/llm_worker.py` (QThread)
+- [~] Stream tokens via signal `sig_token_received(str)`
+- [~] Token buffering (50ms window) pour perf UI
+- [~] Cancellation support (stop button)
+- [x] Error handling avec retry logic
+- [~] Tests : streaming, cancellation, errors
+
+**Additional Providers**
+
 - [ ] Implémenter `src/core/openai_provider.py`
   - [ ] Endpoint /v1/chat/completions
   - [ ] API key auth
@@ -157,19 +261,21 @@
 - [ ] Implémenter `src/core/openrouter_provider.py` (optionnel)
 - [ ] Tests : tous providers avec mocks
 
-### Markdown Rendering
-- [ ] Créer `src/utils/markdown_renderer.py`
-- [ ] Markdown → HTML avec extensions (fenced_code, tables)
-- [ ] Syntax highlighting avec Pygments
-- [ ] Styling CSS pour dark/light themes
-- [ ] Injection dans QTextEdit ou QWebEngineView (si size ok)
-- [ ] Tests : rendering, code blocks
+**Markdown Rendering (DONE)**
+
+- [x] Créer `src/utils/markdown_renderer.py`
+- [x] Markdown → HTML avec extensions (fenced_code, tables)
+- [x] Syntax highlighting avec Pygments
+- [x] Styling CSS pour dark/light themes
+- [x] Injection dans QTextEdit ou QWebEngineView (si size ok)
+- [x] Tests : rendering, code blocks
 
 ---
 
 ## [TODO] Phase 4: Advanced Features (Semaine 4)
 
 ### F-05: Clipboard Management
+
 - [ ] Créer `src/core/clipboard_manager.py`
 - [ ] Get/Set text avec retry logic
 - [ ] Get/Set image (QImage)
@@ -178,6 +284,7 @@
 - [ ] Tests : retry, formats, monitoring
 
 ### F-06: Auto-Paste
+
 - [ ] Créer `src/core/auto_paster.py`
 - [ ] Capture active window handle (Win32 API via ctypes)
 - [ ] Focus restoration
@@ -186,6 +293,7 @@
 - [ ] Tests : focus restore, paste
 
 ### F-07: Screenshot Capture + Vision
+
 - [ ] Créer `src/ui/screenshot_tool.py`
 - [ ] Mode 1: Full screen capture
 - [ ] Mode 2: Region selection (overlay UI)
@@ -196,6 +304,7 @@
 - [ ] Tests UI : overlay, capture
 
 ### F-09: History (SQLite)
+
 - [ ] Créer `src/services/history_service.py`
 - [ ] Schema DB : tables conversations + messages
 - [ ] CRUD operations
@@ -205,6 +314,7 @@
 - [ ] Tests : CRUD, search, export
 
 ### F-12: Theme System
+
 - [ ] Créer assets/styles/dark.qss
 - [ ] Créer assets/styles/light.qss
 - [ ] Créer `src/utils/theme_manager.py`
@@ -218,6 +328,7 @@
 ## [TODO] Phase 5: Polish & Package (Semaine 5)
 
 ### F-08: Toast Notifications
+
 - [ ] Créer `src/ui/toast_notification.py`
 - [ ] Custom QWidget (NOT Windows native)
 - [ ] Position : bottom-right, stacking
@@ -227,6 +338,7 @@
 - [ ] Tests UI : stacking, animations
 
 ### Settings GUI Complete
+
 - [ ] Créer `src/ui/settings_dialog.py` (QDialog avec tabs)
 - [ ] Tab 1: Providers (add/edit/remove, test connection)
 - [ ] Tab 2: Shortcuts (recorder, conflict detection)
@@ -237,6 +349,7 @@
 - [ ] Tests UI : validation, save/load
 
 ### Main Application Entry Point
+
 - [ ] Créer `src/main.py`
 - [ ] QApplication setup
 - [ ] Startup : health checks → tray icon → input hooks
@@ -246,12 +359,14 @@
 - [ ] Tests : startup, cleanup
 
 ### Assets & Resources
+
 - [ ] Créer icons/ (tray icons: ready/busy/error)
 - [ ] Action icons (summarize, translate, screenshot, etc.)
 - [ ] Default prompts JSON
 - [ ] README.md avec screenshots
 
 ### Testing Complete
+
 - [ ] Tests unitaires : core modules (> 80% coverage)
 - [ ] Tests UI : pytest-qt pour widgets
 - [ ] Tests integration : end-to-end workflows
@@ -259,12 +374,14 @@
 - [ ] Manual testing : Windows 10, Windows 11, multi-monitor
 
 ### Documentation
+
 - [ ] SPEC.md finalisé (features détaillées)
 - [ ] README.md (installation, quick start, screenshots)
 - [ ] API documentation (docstrings Google style)
 - [ ] User guide (comment utiliser, troubleshooting)
 
 ### Packaging & Distribution
+
 - [ ] Build avec Nuitka (onefile, optimized)
   ```bash
   nuitka --standalone --onefile --windows-disable-console \
@@ -282,6 +399,7 @@
 ## [TODO] Optimisations Performance
 
 ### Size Optimization
+
 - [ ] Vérifier PySide6-Essentials utilisé (pas full PySide6)
 - [ ] Exclude unused Qt modules
 - [ ] Lazy imports pour modules optionnels
@@ -290,6 +408,7 @@
 - [ ] Target : < 50MB exe
 
 ### Speed Optimization
+
 - [ ] Profile startup avec cProfile
 - [ ] Lazy load providers non-default
 - [ ] Cache config en mémoire
@@ -298,6 +417,7 @@
 - [ ] Target : < 2s cold startup
 
 ### Memory Optimization
+
 - [ ] Limit chat history in-memory (last 50 messages)
 - [ ] Weak references pour signals
 - [ ] Cleanup closed windows
@@ -322,6 +442,7 @@
 ## Notes de Mise à Jour
 
 **Format pour updates :**
+
 ```
 [YYYY-MM-DD] Phase X - Feature
 - [x] Task completed : description résultat
@@ -329,6 +450,7 @@
 ```
 
 ### Log
+
 _Vide - À remplir au fur et à mesure de l'implémentation_
 
 ---

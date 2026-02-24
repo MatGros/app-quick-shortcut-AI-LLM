@@ -20,6 +20,8 @@ Usage:
 
 import sys
 import logging
+import time
+import signal
 from PySide6.QtWidgets import QApplication, QMessageBox
 from PySide6.QtCore import Qt, QThread, Signal, QObject
 
@@ -33,11 +35,13 @@ from src.services.health_check import HealthCheckManager
 # Import UI components
 from src.ui.floating_menu import FloatingMenu
 from src.ui.response_window import ResponseWindow
+from src.ui.inline_response import InlineResponseWindow
 from src.ui.tray_icon import TrayIcon, TrayStatus
 from src.ui.settings_dialog import SettingsDialog
 
 # Import utilities
 from src.core.clipboard_manager import get_clipboard_manager
+import keyboard
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +60,11 @@ class StreamingWorker(QObject):
         self.provider = provider
         self.messages = messages
         self.model = model
+        self._is_stopped = False
+
+    def stop(self):
+        """Request worker to stop processing"""
+        self._is_stopped = True
 
     def run(self):
         """Run streaming in worker thread"""
@@ -64,6 +73,9 @@ class StreamingWorker(QObject):
             token_count = 0
 
             for token in self.provider.stream_chat(self.messages, model=self.model):
+                if getattr(self, '_is_stopped', False):
+                    logger.info("Worker: Stream stopped by user")
+                    break
                 self.token_received.emit(token)
                 token_count += 1
 
@@ -71,8 +83,9 @@ class StreamingWorker(QObject):
             self.streaming_complete.emit()
 
         except Exception as e:
-            logger.error(f"Streaming error in worker: {e}", exc_info=True)
-            self.error_occurred.emit(str(e))
+            if not getattr(self, '_is_stopped', False):
+                logger.error(f"Streaming error in worker: {e}", exc_info=True)
+                self.error_occurred.emit(str(e))
 
 
 class QuickShortcutApp:
@@ -95,6 +108,7 @@ class QuickShortcutApp:
         self.qapp = QApplication.instance() or QApplication(sys.argv)
         self.qapp.setApplicationName("Quick Shortcut AI")
         self.qapp.setApplicationVersion("0.1.0")
+        self.qapp.setQuitOnLastWindowClosed(False)  # Ensure app doesn't close when settings dialog closes
 
         # Core components
         self.config = ConfigService()
@@ -105,6 +119,7 @@ class QuickShortcutApp:
         self.input_mgr = None
         self.floating_menu = None
         self.response_window = None
+        self.inline_response = None
         self.tray_icon = None
         self.settings_dialog = None
 
@@ -172,7 +187,7 @@ class QuickShortcutApp:
 
         # Log results
         for result in results:
-            status = "✓" if result.passed else "✗"
+            status = "[OK]" if result.passed else "[ERR]"
             logger.info(f"{status} {result.name}: {result.message}")
 
         if all_passed:
@@ -200,6 +215,8 @@ class QuickShortcutApp:
         # Response window
         self.response_window = ResponseWindow()
         logger.info("ResponseWindow created")
+        self.inline_response = InlineResponseWindow()
+        logger.info("InlineResponseWindow created")
 
         # Tray icon
         self.tray_icon = TrayIcon()
@@ -241,8 +258,11 @@ class QuickShortcutApp:
         logger.info("Connecting signals")
 
         # Input hooks -> Floating menu
+        # Force QueuedConnection because the signal comes from a background thread
+        # and we must modify GUI elements (like showing windows) in the main thread only.
         self.input_mgr.sig_shortcut_triggered.connect(
-            self._on_shortcut_triggered
+            self._on_shortcut_triggered,
+            Qt.QueuedConnection
         )
 
         # Floating menu -> Response window
@@ -270,6 +290,9 @@ class QuickShortcutApp:
 
         # Response window signals
         self.response_window.sig_stop_requested.connect(
+            self._on_stop_streaming
+        )
+        self.inline_response.sig_closed.connect(
             self._on_stop_streaming
         )
 
@@ -300,25 +323,121 @@ class QuickShortcutApp:
         logger.info("UI shown and ready")
 
     def _on_shortcut_triggered(self, action_id: str, x: int, y: int):
-        """Handle global shortcut trigger (Ctrl+Right-Click)"""
-        logger.debug(f"Shortcut triggered: {action_id} at ({x}, {y})")
+        """Handle global shortcut trigger (Ctrl+Right-Click or Ctrl+Shift+Right-Click)"""
+        logger.info(f"Main: Shortcut signal received: {action_id} at ({x}, {y})")
 
-        self.tray_icon.set_status(TrayStatus.READY)
-        self.floating_menu.show_at_cursor()
+        # Capture active window BEFORE showing any UI
+        # (once the menu or dialog appears, focus shifts away from the user's window)
+        import ctypes
+        self._pre_menu_window = ctypes.windll.user32.GetForegroundWindow()
+        logger.info(f"Main: Saved active window handle: {self._pre_menu_window}")
+
+        if action_id == "summarize":
+            # Direct summarize with INLINE window (UX Modern)
+            logger.info("Main: Executing direct summarize (Inline UX)")
+            self.tray_icon.set_status(TrayStatus.BUSY)
+            
+            # Execute action targeting inline window (window will be shown AFTER clipboard capture to preserve focus)
+            self._execute_action_inline("summarize")
+        else:
+            # Show floating menu (Premium look restored)
+            logger.info("Main: Showing floating menu")
+            self.tray_icon.set_status(TrayStatus.READY)
+            self.floating_menu.show_at_cursor()
+
+    def _execute_action_inline(self, action_id: str):
+        """Execute an action using the Inline Response Window"""
+        import ctypes
+        logger.info(f"Main: [Auto-Copy] Starting for action '{action_id}'")
+        
+        # 0. Clear clipboard to ensure we only process new selection
+        clipboard = QApplication.clipboard()
+        clipboard.clear()
+        
+        # 1. Restore focus to the original application window before capturing
+        # (the menu or app window may have stolen focus from e.g. Chrome)
+        pre_menu_window = getattr(self, '_pre_menu_window', None)
+        if pre_menu_window:
+            logger.info(f"Main: [Auto-Copy] Restoring focus to window {pre_menu_window}")
+            ctypes.windll.user32.SetForegroundWindow(pre_menu_window)
+            time.sleep(0.15)  # Give OS time to actually shift focus
+        
+        # 2. Release modifiers first to avoid Ctrl+Shift+C or interference
+        logger.info("Main: [Auto-Copy] Releasing physical modifiers (Shift, Ctrl)")
+        keyboard.release('shift')
+        keyboard.release('ctrl')
+        time.sleep(0.05)
+        
+        # 3. Protect against SIGINT if the console is the active window (Ctrl+C kills Python)
+        try:
+            logger.info("Main: [Auto-Copy] Applying SIGINT protection")
+            old_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
+        except ValueError:
+            old_handler = None # Not in main thread, ignore
+            
+        logger.info("Main: [Auto-Copy] Simulating Ctrl+C press...")
+        keyboard.send('ctrl+c')
+            
+        time.sleep(0.1)
+        if old_handler is not None:
+            signal.signal(signal.SIGINT, old_handler)
+            
+        # 2. Wait for clipboard sync
+        time.sleep(0.3)
+        
+        # 3. Capture clipboard content
+        text = ""
+        logger.info("Main: [Auto-Copy] Reading clipboard...")
+        for i in range(3):
+            text = clipboard.text().strip()
+            if text:
+                logger.info(f"Main: [Auto-Copy] Successfully captured {len(text)} characters from clipboard")
+                break
+            logger.info(f"Main: [Auto-Copy] Clipboard retry {i+1}/3")
+            time.sleep(0.2)
+
+        if not text:
+            logger.warning("Clipboard capture failed: No text selected or clipboard empty")
+            self.inline_response.clear()
+            self.inline_response.show_at_cursor()
+            self.inline_response.set_text("! Aucune sélection trouvée.\n\nVeuillez sélectionner du texte avant d'utiliser le raccourci.")
+            self.tray_icon.set_status(TrayStatus.READY)
+            return
+
+        # Start streaming to inline window
+        self.inline_response.clear()
+        self.inline_response.show_at_cursor()
+        self._stream_to_inline(action_id, text)
 
     def _on_menu_action_selected(self, action_id: str):
         """Handle floating menu action selection"""
-        logger.info(f"Menu action selected: {action_id}")
+        logger.info(f"Main: Menu action selected: {action_id}")
+        
+        try:
+            # Actions like 'Settings' or 'Exit' don't use the inline window
+            if action_id == "settings":
+                self.settings_dialog.show()
+                self.settings_dialog.raise_()
+                self.settings_dialog.activateWindow()
+                return
+            elif action_id == "exit":
+                self.exit_app()
+                return
 
-        self.tray_icon.set_status(TrayStatus.BUSY)
-
-        # Show response window
-        self.response_window.set_context(action_id, "Running...")
-        self.response_window.clear_response()
-        self.response_window.show()
-
-        # Stream real LLM response
-        self._stream_real_response(action_id)
+            # For AI actions, use the modern inline window as requested
+            logger.info(f"Main: Launching inline execution for '{action_id}'")
+            self.tray_icon.set_status(TrayStatus.BUSY)
+            
+            # Execute action targeting inline window (window will be shown AFTER clipboard capture to preserve focus)
+            self._execute_action_inline(action_id)
+            
+        except Exception as e:
+            logger.error(f"Main: ERROR in menu action selection: {e}", exc_info=True)
+            self.tray_icon.set_status(TrayStatus.READY)
+            # Try to show error in the inline window if possible
+            if self.inline_response:
+                self.inline_response.set_text(f"[ERR] Error: {str(e)}")
+                self.inline_response.show_at_cursor()
 
     def _on_chat_message_submitted(self, user_message: str):
         """Handle user message submitted from chat input"""
@@ -327,8 +446,95 @@ class QuickShortcutApp:
         self.tray_icon.set_status(TrayStatus.BUSY)
         self._stream_chat_response(user_message)
 
+    def _stream_to_inline(self, action_id: str, context_text: str):
+        """Streaming logic specifically for the inline window"""
+        logger.info(f"Main: Streaming '{action_id}' to inline window")
+        
+        # Assuming self.llm_manager exists and has get_current_provider()
+        # If not, this part needs to be adapted to how providers are managed in the original code.
+        # Based on _stream_chat_response and _stream_real_response, provider config is fetched directly.
+        # Let's adapt this to match the existing pattern.
+        
+        provider_config = self.config.get_default_provider()
+        if not provider_config:
+            self.inline_response.set_text("❌ No AI Provider configured.\nPlease check Settings.")
+            self.tray_icon.set_status(TrayStatus.READY)
+            return
+
+        try:
+            provider_type = provider_config.get("type", "ollama")
+            provider_init_config = {
+                "base_url": provider_config.get("base_url", "http://localhost:11434"),
+                "api_key": provider_config.get("api_key", ""),
+            }
+            provider = LLMProviderFactory.create(
+                provider_type=provider_type,
+                config=provider_init_config
+            )
+        except Exception as e:
+            logger.error(f"Failed to create provider for inline stream: {e}")
+            self.inline_response.set_text(f"❌ Failed to create provider: {str(e)}")
+            self.tray_icon.set_status(TrayStatus.READY)
+            return
+
+        try:
+            # 3. Get system/action prompt
+            prompts = {
+                "summarize": "Fais un résumé concis du texte suivant. Réponds impérativement dans la même langue que le texte source (ex: si le texte est en français, réponds en français) :",
+                "translate": "Traduis le texte suivant en français :",
+                "explain": "Explique le code ou le texte suivant en détail. Réponds impérativement dans la même langue que le texte source (ou en français si c'est du code) :",
+                "code": "Génère du code pour accomplir la tâche suivante. Réponds impérativement dans la même langue que le texte source :",
+                "screenshot": "Analyse la capture d'écran suivante et décris ce que tu vois. Réponds en français :",
+            }
+            system_prompt = prompts.get(action_id, "Please process the following text:")
+            messages = [{"role": "user", "content": f"{system_prompt}\n\n{context_text}"}]
+
+            # 4. Get model
+            default_model = self.config.get("default_model")
+            if default_model:
+                model = default_model
+            else:
+                available_models = provider.get_available_models()
+                model = available_models[0] if available_models else "llama2"
+
+            # 5. Start threaded worker
+            # Cleanup previous thread
+            self._cleanup_thread('_inline_thread', '_inline_worker')
+
+            self._inline_thread = QThread()
+            self._inline_worker = StreamingWorker(provider, messages, model)
+            self._inline_worker.moveToThread(self._inline_thread)
+
+            # Signal connections
+            self._inline_thread.started.connect(self._inline_worker.run)
+            self._inline_worker.token_received.connect(self.inline_response.append_token)
+            self._inline_worker.streaming_complete.connect(self._inline_thread.quit)
+            self._inline_worker.streaming_complete.connect(self.inline_response.finish_streaming)
+            self._inline_worker.error_occurred.connect(self._inline_thread.quit)
+            self._inline_worker.error_occurred.connect(lambda e: self.inline_response.append_token(f"\n\n[ERR] Error: {e}"))
+            
+            # Final cleanup
+            self._inline_thread.finished.connect(self._inline_worker.deleteLater)
+            self._inline_thread.finished.connect(self._inline_thread.deleteLater)
+            self._inline_thread.finished.connect(self._on_inline_finished)
+
+            self._inline_thread.start()
+            logger.info(f"Main: Inline streaming thread started for '{action_id}'")
+
+        except Exception as e:
+            logger.error(f"Failed to setup inline stream: {e}", exc_info=True)
+            self.inline_response.append_token(f"\n\n❌ Configuration error: {str(e)}")
+            self.tray_icon.set_status(TrayStatus.READY)
+
+
+    def _on_inline_finished(self):
+        """Cleanup after inline streaming finishes"""
+        self.tray_icon.set_status(TrayStatus.READY)
+        self._inline_thread = None
+        logger.info("Main: Inline thread cleanup complete")
+
     def _stream_chat_response(self, user_message: str):
-        """Stream LLM response for a chat message"""
+        """Stream LLM response for a chat message (non-blocking via QThread)"""
         try:
             # Get active provider config
             provider_config = self.config.get_default_provider()
@@ -342,7 +548,6 @@ class QuickShortcutApp:
             # Create provider instance from config
             provider_type = provider_config.get("type", "ollama")
             try:
-                # Filter config to only include provider-specific parameters
                 provider_init_config = {
                     "base_url": provider_config.get("base_url", "http://localhost:11434"),
                     "api_key": provider_config.get("api_key", ""),
@@ -365,7 +570,7 @@ class QuickShortcutApp:
                 {"role": "user", "content": user_message}
             ]
 
-            # Get model (from config default or first available)
+            # Get model
             try:
                 default_model = self.config.get("default_model")
                 if default_model:
@@ -379,35 +584,40 @@ class QuickShortcutApp:
 
             logger.info(f"Chat using model: {model}")
 
-            # Stream response tokens (keep UI responsive)
-            token_count = 0
-            try:
-                for token in provider.stream_chat(messages, model=model):
-                    self.response_window.append_token(token)
-                    token_count += 1
-                    # Keep UI responsive by processing Qt events
-                    QApplication.processEvents()
+            # Cleanup previous chat thread if running
+            self._cleanup_thread('_chat_thread', '_chat_worker')
 
-                logger.info(f"Chat streaming complete: {token_count} tokens")
+            # Start threaded worker (non-blocking)
+            self._chat_thread = QThread()
+            self._chat_worker = StreamingWorker(provider, messages, model)
+            self._chat_worker.moveToThread(self._chat_thread)
 
-            except Exception as stream_error:
-                logger.error(f"Chat streaming error: {stream_error}", exc_info=True)
-                self.response_window.append_token(
-                    f"\n\n⚠️ Error during streaming: {str(stream_error)}"
-                )
+            # Signal connections
+            self._chat_thread.started.connect(self._chat_worker.run)
+            self._chat_worker.token_received.connect(self.response_window.append_token)
+            self._chat_worker.streaming_complete.connect(self._chat_thread.quit)
+            self._chat_worker.streaming_complete.connect(self.response_window.finish_streaming)
+            self._chat_worker.error_occurred.connect(self._chat_thread.quit)
+            self._chat_worker.error_occurred.connect(
+                lambda e: self.response_window.append_token(f"\n\n⚠️ Error during streaming: {e}")
+            )
 
-            self.response_window.finish_streaming()
+            # Final cleanup
+            self._chat_thread.finished.connect(self._chat_worker.deleteLater)
+            self._chat_thread.finished.connect(self._chat_thread.deleteLater)
+            self._chat_thread.finished.connect(self._on_chat_finished)
+
+            self._chat_thread.start()
+            logger.info("Main: Chat streaming thread started")
 
         except Exception as e:
             logger.error(f"Error in chat response: {e}", exc_info=True)
             self.response_window.append_token(f"❌ Error: {str(e)}")
             self.response_window.finish_streaming()
-
-        finally:
             self.tray_icon.set_status(TrayStatus.READY)
 
     def _stream_real_response(self, action_id: str):
-        """Stream real LLM response from configured provider"""
+        """Stream real LLM response from configured provider (non-blocking via QThread)"""
         try:
             # 1. Get clipboard content
             clipboard_mgr = get_clipboard_manager()
@@ -432,7 +642,6 @@ class QuickShortcutApp:
             # Create provider instance from config
             provider_type = provider_config.get("type", "ollama")
             try:
-                # Filter config to only include provider-specific parameters
                 provider_init_config = {
                     "base_url": provider_config.get("base_url", "http://localhost:11434"),
                     "api_key": provider_config.get("api_key", ""),
@@ -461,47 +670,87 @@ class QuickShortcutApp:
 
             system_prompt = prompts.get(action_id, "Please process the following text:")
 
-            # Build message format: [{"role": "user", "content": "..."}]
             messages = [
                 {"role": "user", "content": f"{system_prompt}\n\n{content}"}
             ]
 
-            # 4. Get model (first available or configured default)
+            # 4. Get model
             try:
                 available_models = provider.get_available_models()
                 model = available_models[0] if available_models else "llama2"
             except Exception as e:
                 logger.warning(f"Could not fetch models, using default: {e}")
-                model = "llama2"  # Default fallback
+                model = "llama2"
 
             logger.info(f"Using model: {model}")
 
-            # 5. Stream response tokens (keep UI responsive)
-            token_count = 0
-            try:
-                for token in provider.stream_chat(messages, model=model):
-                    self.response_window.append_token(token)
-                    token_count += 1
-                    # Keep UI responsive by processing Qt events
-                    QApplication.processEvents()
+            # 5. Cleanup previous response thread if running
+            self._cleanup_thread('_response_thread', '_response_worker')
 
-                logger.info(f"Streaming complete: {token_count} tokens")
+            # Start threaded worker (non-blocking)
+            self._response_thread = QThread()
+            self._response_worker = StreamingWorker(provider, messages, model)
+            self._response_worker.moveToThread(self._response_thread)
 
-            except Exception as stream_error:
-                logger.error(f"Streaming error: {stream_error}", exc_info=True)
-                self.response_window.append_token(
-                    f"\n\n⚠️ Error during streaming: {str(stream_error)}"
-                )
+            # Signal connections
+            self._response_thread.started.connect(self._response_worker.run)
+            self._response_worker.token_received.connect(self.response_window.append_token)
+            self._response_worker.streaming_complete.connect(self._response_thread.quit)
+            self._response_worker.streaming_complete.connect(self.response_window.finish_streaming)
+            self._response_worker.error_occurred.connect(self._response_thread.quit)
+            self._response_worker.error_occurred.connect(
+                lambda e: self.response_window.append_token(f"\n\n⚠️ Error during streaming: {e}")
+            )
 
-            self.response_window.finish_streaming()
+            # Final cleanup
+            self._response_thread.finished.connect(self._response_worker.deleteLater)
+            self._response_thread.finished.connect(self._response_thread.deleteLater)
+            self._response_thread.finished.connect(self._on_response_finished)
+
+            self._response_thread.start()
+            logger.info(f"Main: Response streaming thread started for '{action_id}'")
 
         except Exception as e:
             logger.error(f"Error streaming response: {e}", exc_info=True)
             self.response_window.append_token(f"❌ Error: {str(e)}")
             self.response_window.finish_streaming()
-
-        finally:
             self.tray_icon.set_status(TrayStatus.READY)
+
+    def _cleanup_thread(self, thread_attr: str, worker_attr: str):
+        """Generic thread cleanup helper to prevent QThread destruction warnings."""
+        try:
+            thread = getattr(self, thread_attr, None)
+            if thread:
+                try:
+                    if thread.isRunning():
+                        logger.info(f"Main: Stopping previous {thread_attr}")
+                        worker = getattr(self, worker_attr, None)
+                        if worker:
+                            worker.stop()
+                        thread.quit()
+                        thread.wait(500)
+                        if thread.isRunning():
+                            if not hasattr(self, '_zombie_threads'):
+                                self._zombie_threads = []
+                            self._zombie_threads.append(thread)
+                except (RuntimeError, AttributeError):
+                    logger.debug(f"Main: Previous {thread_attr} was already dead")
+        except Exception as e:
+            logger.error(f"Error cleaning up {thread_attr}: {e}")
+        finally:
+            setattr(self, thread_attr, None)
+
+    def _on_chat_finished(self):
+        """Cleanup after chat streaming finishes"""
+        self.tray_icon.set_status(TrayStatus.READY)
+        self._chat_thread = None
+        logger.info("Main: Chat thread cleanup complete")
+
+    def _on_response_finished(self):
+        """Cleanup after response streaming finishes"""
+        self.tray_icon.set_status(TrayStatus.READY)
+        self._response_thread = None
+        logger.info("Main: Response thread cleanup complete")
 
     def _on_tray_action_triggered(self, action_id: str):
         """Handle tray icon menu action"""
@@ -520,8 +769,24 @@ class QuickShortcutApp:
             self.settings_dialog.exec()
 
     def _on_stop_streaming(self):
-        """Handle stop streaming request"""
-        logger.info("Stop streaming requested")
+        """Handle stop streaming request (manually closed or stopped)"""
+        logger.info("Stop streaming requested - cleaning up threads")
+        
+        try:
+            if hasattr(self, '_inline_thread') and self._inline_thread:
+                if self._inline_thread.isRunning():
+                    logger.info("Main: Force stopping inline thread")
+                    if hasattr(self, '_inline_worker') and self._inline_worker:
+                        self._inline_worker.stop()
+                    self._inline_thread.quit()
+                    self._inline_thread.wait(500)
+                    if self._inline_thread.isRunning():
+                        if not hasattr(self, '_zombie_threads'):
+                            self._zombie_threads = []
+                        self._zombie_threads.append(self._inline_thread)
+        except Exception as e:
+            logger.error(f"Error stopping inline thread: {e}")
+            
         self.tray_icon.set_status(TrayStatus.READY)
 
     def _on_settings_changed(self):

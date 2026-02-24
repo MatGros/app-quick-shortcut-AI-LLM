@@ -15,13 +15,13 @@ class TestHealthCheckResult:
         """Test passed result."""
         result = HealthCheckResult("Test Check", True, "All good")
         assert result.passed is True
-        assert "✅" in str(result)
+        assert "[OK]" in str(result)
 
     def test_result_failed(self):
         """Test failed result."""
         result = HealthCheckResult("Test Check", False, "Failed")
         assert result.passed is False
-        assert "❌" in str(result)
+        assert "[ERR]" in str(result)
 
 
 class TestHealthCheckManager:

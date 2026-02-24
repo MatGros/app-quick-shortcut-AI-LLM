@@ -12,7 +12,7 @@ import ctypes
 import time
 import logging
 from typing import Optional
-from pynput.keyboard import Controller, Key
+import keyboard
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,6 @@ class AutoPaster:
             delay_ms: Delay in milliseconds after paste before restoring focus
         """
         self.delay_ms = delay_ms
-        self.keyboard = Controller()
 
     def paste_to_active_window(self, text: str) -> bool:
         """
@@ -117,11 +116,8 @@ class AutoPaster:
         Send Ctrl+V to paste from clipboard.
         """
         try:
-            # Send Ctrl+V
-            self.keyboard.press(Key.ctrl)
-            self.keyboard.press('v')
-            self.keyboard.release('v')
-            self.keyboard.release(Key.ctrl)
+            # Send Ctrl+V using keyboard library
+            keyboard.send('ctrl+v')
 
             logger.debug("Ctrl+V sent to active window")
 

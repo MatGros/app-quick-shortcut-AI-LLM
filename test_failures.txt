@@ -1,0 +1,60 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\zedou\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+PySide6 6.10.2 -- Qt runtime 6.10.2 -- Qt compiled 6.10.2
+rootdir: D:\MGS\DEV\app-quick-shortcut-AI-LLM
+configfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)
+plugins: anyio-4.12.1, asyncio-1.3.0, cov-7.0.0, mock-3.15.1, qt-4.5.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 373 items / 367 deselected / 6 selected
+run-last-failure: rerun previous 6 failures
+
+tests/test_core/test_auto_paster.py::TestAutoPasterBasics::test_auto_paster_has_keyboard FAILED [ 16%]
+tests/test_core/test_auto_paster.py::TestAutoPasterKeyboard::test_paste_via_keyboard FAILED [ 33%]
+tests/test_core/test_auto_paster.py::TestAutoPasterKeyboard::test_keyboard_sequence FAILED [ 50%]
+tests/test_services/test_health_check.py::TestHealthCheckResult::test_result_passed FAILED [ 66%]
+tests/test_services/test_health_check.py::TestHealthCheckResult::test_result_failed FAILED [ 83%]
+tests/test_ui/test_settings_dialog.py::TestProvidersTab::test_default_provider_marked FAILED [100%]
+
+================================== FAILURES ===================================
+_____________ TestAutoPasterBasics.test_auto_paster_has_keyboard ______________
+tests\test_core\test_auto_paster.py:34: in test_auto_paster_has_keyboard
+    assert hasattr(paster, 'keyboard')
+E   AssertionError: assert False
+E    +  where False = hasattr(<src.core.auto_paster.AutoPaster object at 0x0000029A1580A350>, 'keyboard')
+_______________ TestAutoPasterKeyboard.test_paste_via_keyboard ________________
+tests\test_core\test_auto_paster.py:111: in test_paste_via_keyboard
+    with patch.object(paster.keyboard, 'press') as mock_press, \
+                      ^^^^^^^^^^^^^^^
+E   AttributeError: 'AutoPaster' object has no attribute 'keyboard'
+________________ TestAutoPasterKeyboard.test_keyboard_sequence ________________
+tests\test_core\test_auto_paster.py:124: in test_keyboard_sequence
+    with patch.object(paster.keyboard, 'press') as mock_press, \
+                      ^^^^^^^^^^^^^^^
+E   AttributeError: 'AutoPaster' object has no attribute 'keyboard'
+__________________ TestHealthCheckResult.test_result_passed ___________________
+tests\test_services\test_health_check.py:18: in test_result_passed
+    assert "\u2705" in str(result)
+E   AssertionError: assert '\u2705' in '[OK] Test Check: All good'
+E    +  where '[OK] Test Check: All good' = str([OK] Test Check: All good)
+__________________ TestHealthCheckResult.test_result_failed ___________________
+tests\test_services\test_health_check.py:24: in test_result_failed
+    assert "\u274c" in str(result)
+E   AssertionError: assert '\u274c' in '[ERR] Test Check: Failed'
+E    +  where '[ERR] Test Check: Failed' = str([ERR] Test Check: Failed)
+________________ TestProvidersTab.test_default_provider_marked ________________
+tests\test_ui\test_settings_dialog.py:98: in test_default_provider_marked
+    assert found_star
+E   assert False
+----------------------------- Captured log setup ------------------------------
+WARNING  src.ui.settings_dialog:settings_dialog.py:397 Could not fetch models: Failed to fetch Ollama models: HTTPConnectionPool(host='localhost', port=11434): Max retries exceeded with url: /api/tags (Caused by NewConnectionError("HTTPConnection(host='localhost', port=11434): Failed to establish a new connection: [WinError 10061] Aucune connexion nÆa pu Ûtre Útablie car lÆordinateur cible lÆa expressÚment refusÚe"))
+------------------------------ Captured log call ------------------------------
+WARNING  src.ui.settings_dialog:settings_dialog.py:397 Could not fetch models: Failed to fetch Ollama models: HTTPConnectionPool(host='localhost', port=11434): Max retries exceeded with url: /api/tags (Caused by NewConnectionError("HTTPConnection(host='localhost', port=11434): Failed to establish a new connection: [WinError 10061] Aucune connexion nÆa pu Ûtre Útablie car lÆordinateur cible lÆa expressÚment refusÚe"))
+=========================== short test summary info ===========================
+FAILED tests/test_core/test_auto_paster.py::TestAutoPasterBasics::test_auto_paster_has_keyboard
+FAILED tests/test_core/test_auto_paster.py::TestAutoPasterKeyboard::test_paste_via_keyboard
+FAILED tests/test_core/test_auto_paster.py::TestAutoPasterKeyboard::test_keyboard_sequence
+FAILED tests/test_services/test_health_check.py::TestHealthCheckResult::test_result_passed
+FAILED tests/test_services/test_health_check.py::TestHealthCheckResult::test_result_failed
+FAILED tests/test_ui/test_settings_dialog.py::TestProvidersTab::test_default_provider_marked
+===================== 6 failed, 367 deselected in 16.84s ======================

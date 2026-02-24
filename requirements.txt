@@ -1,6 +1,6 @@
 # Core Dependencies - MINIMAL & ESSENTIAL ONLY
 PySide6-Essentials>=6.5.0
-pynput>=1.7.6
+keyboard>=0.13.5
 requests>=2.31.0
 
 # Optional (lazy import)

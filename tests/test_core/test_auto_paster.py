@@ -28,11 +28,7 @@ class TestAutoPasterBasics:
         paster = AutoPaster(delay_ms=200)
         assert paster.delay_ms == 200
 
-    def test_auto_paster_has_keyboard(self):
-        """Test AutoPaster has keyboard controller"""
-        paster = AutoPaster()
-        assert hasattr(paster, 'keyboard')
-        assert paster.keyboard is not None
+
 
 
 class TestAutoPasterSingleton:
@@ -108,31 +104,23 @@ class TestAutoPasterKeyboard:
         """Test sending Ctrl+V"""
         paster = AutoPaster()
 
-        with patch.object(paster.keyboard, 'press') as mock_press, \
-             patch.object(paster.keyboard, 'release') as mock_release:
-
+        with patch('src.core.auto_paster.keyboard.send') as mock_send:
             paster._paste_via_keyboard()
 
-            # Should have called press/release for Ctrl and V
-            assert mock_press.called
-            assert mock_release.called
+            # Should have called send with 'ctrl+v'
+            assert mock_send.called
+            mock_send.assert_called_once_with('ctrl+v')
 
     def test_keyboard_sequence(self):
         """Test correct keyboard sequence for Ctrl+V"""
         paster = AutoPaster()
 
-        with patch.object(paster.keyboard, 'press') as mock_press, \
-             patch.object(paster.keyboard, 'release') as mock_release:
-
+        with patch('src.core.auto_paster.keyboard.send') as mock_send:
             paster._paste_via_keyboard()
 
-            # Verify Ctrl and V were pressed
-            press_calls = mock_press.call_args_list
-            release_calls = mock_release.call_args_list
-
-            # Should have at least 2 presses and 2 releases
-            assert len(press_calls) >= 2
-            assert len(release_calls) >= 2
+            # Verify send was called
+            assert mock_send.call_count == 1
+            mock_send.assert_called_with('ctrl+v')
 
 
 class TestAutoPasterWindowFocus:
