@@ -1,327 +1,356 @@
-# 📋 AUDIT TECHNOLOGIQUE COMPLET
-## Quick Shortcut AI LLM Assistant
+# ⚡ Quick Shortcut AI LLM Assistant
 
-**Date**: 24 février 2026
-**Status**: Audit complete, recommendations ready
-**Confidence**: 95%
+> A lightweight, ultra-fast Windows native application for AI-powered text assistance with global keyboard shortcuts.
 
----
-
-## ⚡ DOCUMENTS TOO MANY? START HERE INSTEAD!
-
-### 📄 **AUDIT_COMPLET_COMPILE.md** ⭐ RECOMMENDED
-**Single file with EVERYTHING**
-- Executive summary
-- 5 bugs explained
-- Phase 3B plan (day-by-day)
-- Technical analysis
-- Code snippets (ready to copy)
-- Testing plan
-- Contingency plans
-- All in ONE document!
-
-**Time to read**: 20-30 minutes (or skip to sections you need)
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
+[![Tests Passing](https://img.shields.io/badge/Tests-365%2F365%20passing-brightgreen)](./docs/testing/PHASE3_ISSUES_INVENTORY.md)
+[![Coverage](https://img.shields.io/badge/Coverage-89%25-brightgreen)](#test-coverage)
+[![License](https://img.shields.io/badge/License-GPL--3.0-blue)](LICENSE)
 
 ---
 
-## 🚀 START HERE (If you want separate files)
+## 🎯 What is This?
 
-**New to this audit?** Start with one of these:
+A modern Windows assistant that brings AI to your fingertips with **one keyboard shortcut**:
 
-1. **⏱️ 5 minutes** → `00_START_HERE.md`
-2. **⏱️ 15 minutes** → `RESEARCH_EXECUTIVE_SUMMARY.md`
-3. **⏱️ 30 minutes** → `PLAN_ACTION_SEMAINE.md`
-4. **⏱️ Ready to code?** → `PRACTICAL_SOLUTIONS_CODE_SNIPPETS.md`
+1. **Ctrl + Right-Click** anywhere
+2. Choose an action (Summarize, Translate, Custom Prompt, etc.)
+3. Get AI response instantly with streaming
 
----
-
-## 📂 FOLDER STRUCTURE
-
-This audit folder (`docs/08_audit/`) contains the complete technical audit.
-
-**Part of the 7-folder documentation system:**
-- `docs/01_input/` ← Input requirements
-- `docs/02_planning/` ← Planning & tasks
-- `docs/03_implementation/` ← Implementation decisions
-- `docs/04_testing/` ← Testing guides
-- `docs/05_review/` ← Review & validation
-- `docs/06_release/` ← Release notes
-- **`docs/08_audit/`** ← THIS FOLDER (Technical audit & alternatives)
+**Supports:** Ollama (local), OpenAI, Anthropic Claude, and more.
 
 ---
 
-## 📚 DOCUMENTS IN THIS FOLDER
+## ✨ Key Features
 
-### Entry Points (Read first!)
-
-📄 **00_START_HERE.md**
-- Quick orientation guide
-- All paths explained
-- 5 minute decision framework
-
-📄 **LIVRABLES_AUDIT_COMPLET.txt**
-- Summary of all deliverables
-- Document overview table
-- Success criteria
-
-### Executive Summaries (Decision making)
-
-📄 **AUDIT_FINAL_RESUME.txt** (1 page)
-- Current situation
-- 5 critical bugs
-- Recommendations
-- Confidence scores
-
-📄 **RESEARCH_EXECUTIVE_SUMMARY.md** (5 pages)
-- 3 paths overview
-- Decision tree
-- Timeline comparison
-- Key findings
-
-### Detailed Analysis (Technical deep dive)
-
-📄 **AUDIT_TECHNOLOGIQUE_COMPLET.md** (20 pages)
-- Complete problem analysis
-- Current technologies
-- 5 bugs detailed breakdown
-- Alternatives evaluated
-- Comparison matrix
-
-📄 **RESEARCH_REPORT_ARCHITECTURE_ALTERNATIVES.md** (30 pages)
-- Deep research findings
-- 15+ GitHub issues analyzed
-- Alternative solutions
-- Performance benchmarks
-- All sources documented
-
-### Implementation (Ready to code)
-
-📄 **PLAN_ACTION_SEMAINE.md** (Day-by-day plan)
-- Monday: Fix hotkeys
-- Tuesday: Fix threading
-- Wednesday: Fix bugs
-- Thursday-Friday: UAT
-- Troubleshooting guide
-
-📄 **PRACTICAL_SOLUTIONS_CODE_SNIPPETS.md** (Copy-paste code)
-- InputManager with keyboard library
-- QThread worker pattern (complete)
-- Win32 API fallback
-- Testing patterns
-- Debug techniques
-
-### Navigation & Research Info
-
-📄 **AUDIT_INDEX.md**
-- Complete navigation guide
-- Search index by question
-- Learning paths (beginner → advanced)
-
-📄 **RESEARCH_README.md**
-- Research methodology
-- Search queries used
-- Sources examined
-- Confidence levels
-
-📄 **RESEARCH_INDEX.md** (from agent research)
-- Agent's research index
-- References to findings
-
-📄 **RESEARCH_DELIVERABLES.txt** (from agent research)
-- Summary from agent work
+| Feature                    | Status     | Details                               |
+| -------------------------- | ---------- | ------------------------------------- |
+| **🔌 Multi-LLM Support**   | ✅ Phase 1 | Ollama, OpenAI, Anthropic (pluggable) |
+| **⌨️ Global Shortcuts**    | 🚧 Phase 2 | Ctrl+Right-Click menu system          |
+| **💬 Streaming Chat**      | 🚧 Phase 2 | Real-time token streaming             |
+| **📸 Screenshot + Vision** | 📋 Phase 3 | AI analyze images natively            |
+| **💾 History**             | 📋 Phase 4 | SQLite-based conversation storage     |
+| **🎨 Modern UI**           | 🚧 Phase 2 | Dark/Light themes, smooth animations  |
+| **⚡ Ultra-Fast**          | 🎯 Target  | < 2s startup, < 100ms menu latency    |
 
 ---
 
-## 🎯 QUICK DECISION
+## 🚀 Quick Start
 
-**Q: Which path to take?**
+### Prerequisites
 
-- 1 week available? → **PATH 1: Fix Python** (keyboard + QThread)
-- 2-3 weeks available? → **PATH 2: Rewrite Electron** (modern JS)
-- 3-4 weeks available? → **PATH 3: Rewrite Tauri** (efficient Rust)
+- **Windows 10** (1809+) or **Windows 11**
+- **Python 3.10+**
+- One LLM: Ollama (local) OR OpenAI/Anthropic API key
 
-**Read:** `RESEARCH_EXECUTIVE_SUMMARY.md` (decision tree on page 96)
+### Installation (Development)
 
----
+```bash
+# 1. Clone repo
+git clone <repo-url>
+cd app-quick-shortcut-AI-LLM
 
-## 📊 KEY FINDINGS
+# 2. Create virtual environment
+python -m venv venv
+.\venv\Scripts\activate
 
-**✅ CONFIRMED (95% confidence):**
-- pynput + PySide6 = incompatible (6+ year unfixed issues)
-- keyboard library = best drop-in replacement
-- QThread pattern = solution for threading freeze
-- Path 1 = 90% success rate, 1 week timeline
+# 3. Install dependencies
+pip install -r requirements.txt
 
-**🔴 5 BUGS (All fixable):**
-1. Settings closes app (2-4h fix)
-2. Icon stuck red (1-2h fix)
-3. Chat freezes (4-6h fix)
-4. Menu non-clickable (2-3h fix)
-5. Windows menu visible (accepted limitation)
-
-**✅ SUCCESS CRITERIA FRIDAY:**
-- Hotkeys work
-- Chat responsive
-- Settings stable
-- Icon correct
-- Menu clickable
-- Tests pass
-- Zero crashes
-
----
-
-## 🗺️ READING PATHS
-
-### Path: "Give me the quick version"
-1. This README (you're reading it!)
-2. `00_START_HERE.md`
-3. `RESEARCH_EXECUTIVE_SUMMARY.md`
-
-### Path: "I want to start coding Monday"
-1. `00_START_HERE.md`
-2. `PLAN_ACTION_SEMAINE.md`
-3. `PRACTICAL_SOLUTIONS_CODE_SNIPPETS.md`
-
-### Path: "I need full understanding first"
-1. `RESEARCH_EXECUTIVE_SUMMARY.md` (15 min)
-2. `AUDIT_TECHNOLOGIQUE_COMPLET.md` (45 min)
-3. `RESEARCH_REPORT_ARCHITECTURE_ALTERNATIVES.md` (60 min)
-4. `PLAN_ACTION_SEMAINE.md` (20 min)
-
-### Path: "I'm lost, help!"
-1. `AUDIT_INDEX.md` (navigation guide)
-2. Find your question in the search index
-3. Go to relevant document
-
----
-
-## ⚡ QUICK START (Today)
-
+# 4. Run tests to verify setup
+pytest tests/ -v
 ```
-TODAY:
-  [ ] Read: 00_START_HERE.md (5 min)
-  [ ] Read: RESEARCH_EXECUTIVE_SUMMARY.md (15 min)
-  [ ] Decide: Path 1 or other? (5 min)
 
-MONDAY (if Path 1):
-  [ ] Read: PLAN_ACTION_SEMAINE.md (Day 1-2)
-  [ ] Copy code: PRACTICAL_SOLUTIONS_CODE_SNIPPETS.md
-  [ ] Start: pip install keyboard
-  [ ] Begin: refactor src/core/input_manager.py
+### First Run
 
-FRIDAY:
-  [ ] Full UAT
-  [ ] Deploy ✅
+```bash
+# Coming in Phase 2 - For now, tests only
+python -m pytest tests/ -v
 ```
 
 ---
 
-## 📊 DOCUMENT QUICK REFERENCE
+## 📋 Project Status
 
-| Document | Length | Focus | Time | For |
-|----------|--------|-------|------|-----|
-| 00_START_HERE.md | 7.8K | Overview | 5 min | Everyone |
-| AUDIT_FINAL_RESUME.txt | 12K | Summary | 10 min | Decision |
-| RESEARCH_EXECUTIVE_SUMMARY.md | 8.8K | Decision | 15 min | Exec |
-| AUDIT_TECHNOLOGIQUE_COMPLET.md | 21K | Analysis | 45 min | Technical |
-| RESEARCH_REPORT_ARCHITECTURE_ALTERNATIVES.md | 33K | Research | 60 min | Deep dive |
-| PLAN_ACTION_SEMAINE.md | 17K | Tasks | 30 min | Implementation |
-| PRACTICAL_SOLUTIONS_CODE_SNIPPETS.md | 21K | Code | 20 min | Developers |
-| AUDIT_INDEX.md | 6.7K | Navigation | 10 min | Lost? |
+### ✅ Phase 1: Foundation (COMPLETE)
 
-**Total: 12 documents, 141 KB, 99 pages**
+- [x] LLM Provider abstraction (Ollama, OpenAI, Anthropic)
+- [x] Configuration service (JSON persistence)
+- [x] Health checks (startup validation)
+- [x] **43 unit tests (87% coverage)**
+- [x] Ready for UI layer
 
----
+### ✅ Phase 2: UI Core (COMPLETE - Unit Tests)
 
-## 🎓 RESEARCH QUALITY
+- [x] Global keyboard hooks (Ctrl+Right-Click) - unit tested
+- [x] Floating context menu (6 actions) - unit tested
+- [x] Response streaming window - unit tested
+- [x] Keyboard shortcuts manager - unit tested
+- [x] System tray icon - unit tested
+- [x] Main app orchestration - unit tested
+- [x] **213 unit tests (89% coverage)**
+- [x] Components signal-connected
+- ⚠️ No integration/visual tests yet (moved to Phase 3)
 
-- ✅ 20+ web searches
-- ✅ 15+ GitHub issues analyzed
-- ✅ 10+ technologies evaluated
-- ✅ 8+ frameworks compared
-- ✅ 4+ hours research
-- ✅ All sources documented
+### 🚧 Phase 3: LLM Integration & Testing (IN PROGRESS - UAT PAUSED)
 
----
+**Status**: Code complete (365 tests passing) but **critical UI bugs blocking UAT**
 
-## 📞 SUPPORT
+- [x] Real LLM streaming (Task #1 - done)
+- [x] Clipboard manager (Task #1 - done)
+- [x] Markdown rendering (Task #3 - done)
+- [x] Settings dialog (Task #4 - done, but closes app ❌)
+- [x] Auto-paste (Task #5 - done)
+- [x] Integration Tests (Task #6 - 365 tests passing ✅)
+- 🔴 Chat streaming (works but freezes UI ❌)
+- 🔴 Floating context menu (appears but unclickable ❌)
+- 🔴 Status icon (shows wrong state ❌)
 
-**Looking for something specific?**
+**Blocking Issues** ([Details here](docs/testing/PHASE3_ISSUES_INVENTORY.md)):
+1. Settings dialog closes entire app
+2. Status icon stays red with valid config
+3. Chat UI freezes during LLM response
+4. Menu items not clickable
+5. Windows system menu appears alongside app menu
 
-| Question | File | Section |
-|----------|------|---------|
-| Why is it broken? | AUDIT_TECHNOLOGIQUE_COMPLET.md | PROBLÈMES CRITIQUES |
-| What should I do? | PLAN_ACTION_SEMAINE.md | DAY 1-5 |
-| How confident are you? | AUDIT_FINAL_RESUME.txt | Confidence Scores |
-| What's the cost? | AUDIT_TECHNOLOGIQUE_COMPLET.md | MATRICE COMPARAISON |
-| Show me the code | PRACTICAL_SOLUTIONS_CODE_SNIPPETS.md | All sections |
-| I'm stuck | PLAN_ACTION_SEMAINE.md | TROUBLESHOOTING |
+**Next**: Fix 5 critical issues before continuing UAT
 
----
+### 📋 Phase 4: Polish (PLANNED)
 
-## ✨ BOTTOM LINE
+- [ ] SQLite history with search
+- [ ] Toast notifications
+- [ ] Dark/Light theme system (QSS)
+- [ ] Performance profiling and optimization
 
-| Aspect | Status |
-|--------|--------|
-| **Code** | ✅ Complete (365 tests, 89% coverage) |
-| **Issues** | ❌ 5 critical bugs blocking UAT |
-| **Root Cause** | 🔴 pynput + PySide6 incompatible |
-| **Solution** | ✅ Replace pynput → keyboard library |
-| **Timeline** | ⏱️ 1 week for Path 1 |
-| **Success Rate** | 🎯 90% confidence |
-| **Overall Confidence** | 💡 95% |
+### 📋 Phase 5: Release (PLANNED)
 
----
-
-## 🚀 NEXT STEPS
-
-1. **Right now**: Open `00_START_HERE.md`
-2. **In 15 min**: Decide your path
-3. **Monday**: Start coding
-4. **Friday**: Production ready ✅
+- [ ] Packaging with Nuitka (< 50MB exe, < 2s startup)
+- [ ] Final documentation & user guide
+- [ ] Release on GitHub
 
 ---
 
-## 📝 WORKFLOW INTEGRATION
+## 🧪 Testing
 
-This audit folder (`docs/08_audit/`) is part of the complete documentation workflow:
+### Run All Tests
 
-```
-Phase Flow:
-  01_input/          ← Requirements
-     ↓
-  02_planning/       ← Plan work
-     ↓
-  03_implementation/ ← Make decisions
-     ↓
-  04_testing/        ← Test thoroughly
-     ↓
-  05_review/         ← Review results
-     ↓
-  06_release/        ← Update specs
-     ↓
-  07_archive/        ← Keep history
+```bash
+# With coverage report
+pytest tests/ -v --cov=src --cov-report=term-missing
 
-  08_audit/ (THIS) ← Technical deep-dives & alternatives
+# Summary
+pytest tests/ -v
 ```
 
-This audit provides detailed alternatives analysis for the current blockers.
+### Expected Output
+
+```
+✅ test_llm_provider.py     : 18 tests passing
+✅ test_config_service.py   : 14 tests passing
+✅ test_health_check.py     : 11 tests passing
+======================== 43 passed in 0.56s ========================
+Coverage: 87% ⭐
+```
+
+### Test Coverage by Module
+
+```
+llm_provider.py    : 89% ⭐
+config_service.py  : 93% ⭐
+health_check.py    : 85% ⭐
+```
+
+For more details, see [PHASE_1_REVIEW.md](PHASE_1_REVIEW.md) and [VSCODE_TESTING_GUIDE.md](VSCODE_TESTING_GUIDE.md).
 
 ---
 
-## 📄 Archive Info
+## 📁 Project Structure
 
-**Generated**: 24 février 2026
-**By**: Comprehensive technical audit
-**For**: Quick Shortcut AI LLM Assistant (Phase 3)
-**Purpose**: Identify blockers, evaluate solutions, recommend path forward
+```
+app-quick-shortcut-ai-llm/
+├── src/                          # Application code
+│   ├── core/                      # Core logic
+│   │   ├── llm_provider.py        # Abstract LLM interface + Factory
+│   │   ├── ollama_provider.py     # Ollama implementation
+│   │   ├── openai_provider.py     # OpenAI implementation
+│   │   ├── anthropic_provider.py  # Anthropic implementation
+│   │   └── config_service.py      # Configuration (Singleton)
+│   ├── ui/                        # UI components (Phase 2+)
+│   ├── services/                  # Services
+│   │   └── health_check.py        # Startup validation
+│   └── utils/                     # Utilities
+├── tests/                         # Test suite
+│   ├── test_core/                 # Core tests
+│   └── test_services/             # Service tests
+├── assets/                        # Icons, styles (Phase 2+)
+├── docs/                          # Documentation
+├── requirements.txt               # Python dependencies
+├── pyproject.toml                 # Project metadata
+├── pytest.ini                     # Pytest configuration
+├── SPEC.md                        # Technical specification
+├── TODO.md                        # Implementation roadmap
+├── LICENSE                        # GPL-3.0
+└── README.md                      # This file
+```
 
 ---
 
-## 🎯 READY TO START?
+## ⚙️ Configuration
 
-**5 min path**: `00_START_HERE.md` → Decision tree → Choose Path
-**Full path**: `RESEARCH_EXECUTIVE_SUMMARY.md` → Full audit → Implementation plan
-**Dev path**: `PLAN_ACTION_SEMAINE.md` → Day-by-day → Code snippets
+### Location
 
-**Choose your path and begin!** 🚀
+```
+%APPDATA%\QuickShortcutAI\config.json
+```
+
+### Example Config
+
+```json
+{
+  "providers": [
+    {
+      "id": "ollama-local",
+      "type": "ollama",
+      "base_url": "http://localhost:11434",
+      "enabled": true
+    }
+  ],
+  "appearance": {
+    "theme": "dark",
+    "font_family": "Segoe UI",
+    "font_size": 11
+  },
+  "behavior": {
+    "auto_paste_enabled": false,
+    "auto_paste_delay_ms": 100
+  }
+}
+```
+
+See [SPEC.md](docs/technical/SPEC.md) for complete configuration schema.
+
+---
+
+## 📚 Documentation
+
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development workflow and standards
+- **[SPEC.md](docs/technical/SPEC.md)** - Complete technical specification
+- **[STATUS.md](STATUS.md)** - Current project status and known issues
+- **[TODO.md](docs/planning/TODO.md)** - Implementation roadmap
+- **[PHASE_1_REVIEW.md](docs/planning/PHASE_1_REVIEW.md)** - Phase 1 detailed review
+- **[PHASE3_ISSUES_INVENTORY.md](docs/testing/PHASE3_ISSUES_INVENTORY.md)** - Current Phase 3 blocking issues
+- **[VSCODE_TESTING_GUIDE.md](docs/testing/VSCODE_TESTING_GUIDE.md)** - How to run tests in VS Code
+- **[QUICK_START_TESTS.md](docs/testing/QUICK_START_TESTS.md)** - 3-minute test startup guide
+
+---
+
+## 🔧 Development
+
+### Code Style
+
+- **Formatter**: `black` (auto-formatted)
+- **Linter**: `ruff`
+- **Type Hints**: Where relevant (not strict)
+- **Docstrings**: Google style
+
+### VS Code Setup
+
+```
+Recommended extensions:
+- Python (Microsoft)
+- Pylance (Microsoft)
+- Python Test Explorer (Little Fox Team)
+```
+
+Open command palette (`Ctrl+Shift+P`):
+
+```
+"Python: Select Interpreter" → Choose venv interpreter
+"Test: Focus on Test Explorer View" → See all tests
+```
+
+---
+
+## 🎯 Performance Targets
+
+| Metric             | Target       | Current       |
+| ------------------ | ------------ | ------------- |
+| App startup        | < 2s         | TBD (Phase 2) |
+| Menu latency       | < 100ms      | TBD (Phase 2) |
+| Streaming response | Smooth 60fps | TBD (Phase 2) |
+| Memory (idle)      | < 150MB      | TBD (Phase 2) |
+| Exe size           | < 50MB       | TBD (Phase 5) |
+
+---
+
+## 🐛 Troubleshooting
+
+### Tests not found in VS Code?
+
+```bash
+# 1. Refresh test explorer (icon in VS Code)
+# 2. Ensure pytest installed in venv:
+pip install pytest pytest-cov
+# 3. Restart VS Code
+```
+
+### Import errors?
+
+```bash
+# Verify PYTHONPATH includes src/
+export PYTHONPATH=$PYTHONPATH:$(pwd)/src
+python -m pytest tests/ -v
+```
+
+### Need more details?
+
+See [VSCODE_TESTING_GUIDE.md](VSCODE_TESTING_GUIDE.md) for comprehensive troubleshooting.
+
+---
+
+## 🤝 Contributing
+
+This is a personal project, but improvements are welcome:
+
+1. Fork the repo
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Add tests for your changes
+4. Ensure all tests pass (`pytest tests/ -v`)
+5. Submit pull request
+
+---
+
+## 📄 License
+
+This project is licensed under **GPL-3.0** - see [LICENSE](LICENSE) file for details.
+
+---
+
+## 🚦 Next Steps
+
+### For Users
+
+1. ✅ Read this README
+2. ✅ Check [SPEC.md](SPEC.md) for features
+3. 🚧 Phase 2: Download exe and try it (coming soon)
+
+### For Developers
+
+1. ✅ Run tests: `pytest tests/ -v`
+2. ✅ Read [PHASE_1_REVIEW.md](PHASE_1_REVIEW.md)
+3. 🚧 Phase 2: Begin UI implementation
+4. 📋 See [TODO.md](TODO.md) for detailed roadmap
+
+---
+
+## 📞 Support
+
+- **Issues**: Check [TODO.md](TODO.md) roadmap
+- **Questions**: See documentation files above
+- **Test Help**: [VSCODE_TESTING_GUIDE.md](VSCODE_TESTING_GUIDE.md)
+
+---
+
+**Built with ❤️ using Python + PySide6 + pytest**
+
+_Last updated: 2026-02-17 | Phase 3 In Progress | UAT Paused - Critical Issues Identified_
